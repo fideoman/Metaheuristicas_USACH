@@ -13,7 +13,7 @@ import java.util.List;
 import cl.usach.mh.busquedatabu.qap.Local;
 import cl.usach.mh.busquedatabu.qap.Localidad;
 
-public class BusquedaTabu16 {
+public class BusquedaTabu12 {
 	
 	public static ArrayList<Local> locales = new ArrayList<Local>();
 	public static ArrayList<Localidad> localidades = new ArrayList<Localidad>();
