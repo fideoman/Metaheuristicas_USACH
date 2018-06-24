@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="usr/lib/cloning-1.8.5.jar"/>
 	<classpathentry kind="lib" path="usr/lib/jfreechart-1.0.15.jar"/>
 	<classpathentry kind="lib" path="usr/lib/jcommon-1.0.20.jar"/>
+	<classpathentry kind="lib" path="usr/lib/commons-lang3-3.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
