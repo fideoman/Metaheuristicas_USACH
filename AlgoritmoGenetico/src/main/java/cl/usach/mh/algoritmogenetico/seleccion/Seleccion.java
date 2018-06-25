@@ -3,12 +3,13 @@ package cl.usach.mh.algoritmogenetico.seleccion;
 import java.util.ArrayList;
 import java.util.Random;
 
-import cl.usach.mh.algoritmogenetico.Individuos;
+import cl.usach.mh.algoritmogenetico.AlgoritmoGenetico;
+import cl.usach.mh.algoritmogenetico.Individuo;
 
 /**
  * Seleccion de los individuos de la poblacion.
  * @author Jose Manuel Rosell Sanchez
- * Adaptado por Isaac Silva
+ * Adaptado y mejorado por Isaac Silva
  */
 public class Seleccion {
 	
@@ -20,19 +21,17 @@ public class Seleccion {
 	 * @param poblacion poblacion actual
 	 * @return la nueva poblacion
 	 */
-	public static ArrayList<Individuos> porTorneo(ArrayList<Individuos> poblacion){
-		Random rnd = new Random();
-		ArrayList<Individuos> nueva_poblacion = new ArrayList<Individuos>();
+	public static ArrayList<Individuo> porTorneo(ArrayList<Individuo> poblacion){
+		ArrayList<Individuo> nueva_poblacion = new ArrayList<Individuo>();				
 		
-		for(int i=0; i<poblacion.size(); i++){
-			int cromosoma1 = rnd.nextInt(((poblacion.size()-1) - 0) + 1) + 0;
-			int cromosoma2 = rnd.nextInt(((poblacion.size()-1) - 0) + 1) + 0;
-			while(cromosoma2==cromosoma1){
-				cromosoma2 = rnd.nextInt(((poblacion.size()-1) - 0) + 1) + 0;
-			}
-
-			Individuos aux1 = poblacion.get(cromosoma1);
-			Individuos aux2 = poblacion.get(cromosoma2);
+		for(int i=0; i<poblacion.size(); i++){	
+			int[] parUnico = AlgoritmoGenetico.todasCombinacionesUnicas.get(new Random().nextInt(AlgoritmoGenetico.todasCombinacionesUnicas.size()));
+			
+			int c1 = parUnico[0];
+			int c2 = parUnico[1];
+			
+			Individuo aux1 = poblacion.get(c1);
+			Individuo aux2 = poblacion.get(c2);
 			
 			if(aux1.getFitness() < aux2.getFitness()){
 				nueva_poblacion.add(aux1);
@@ -41,5 +40,5 @@ public class Seleccion {
 			}
 		}
 		return nueva_poblacion;
-	}
+	}	
 }

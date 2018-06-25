@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Clase para mostrar por pantalla las poblaciones generadas.
  * @author Jose Manuel Rosell Sanchez
- * Adaptado por Isaac Silva
+ * Adaptado y mejorado por Isaac Silva
  */
 public class Imprimir {
 	
@@ -15,10 +15,10 @@ public class Imprimir {
 	 *
 	 * @param poblacion la poblacion actual
 	 */
-	public static void imprimirPoblacion(ArrayList<Individuos> poblacion){
+	public static void imprimirPoblacion(ArrayList<Individuo> poblacion){
 		for(int i=0; i<poblacion.size();i++){
-			for(int j=0; j<poblacion.get(i).getCromosoma().size();j++){
-				System.out.print(poblacion.get(i).getCromosoma().get(j)+" ");
+			for(int j=0; j<poblacion.get(i).getCromosoma().length;j++){
+				System.out.print(poblacion.get(i).getCromosoma()[j]+" ");
 			}
 			System.out.println("\n"+poblacion.get(i).getFitness()+"\n");
 		}
@@ -31,18 +31,18 @@ public class Imprimir {
 	 *
 	 * @param poblacion la poblacion actual
 	 */
-	public static void mejorSolucion(ArrayList<Individuos> poblacion){
-		Individuos min_fitness;
+	public static void mejorSolucion(ArrayList<Individuo> poblacion){
+		Individuo min_fitness;
 		min_fitness = poblacion.get(0);
 		for(int ii=0; ii<poblacion.size();ii++){
-			Individuos aux = poblacion.get(ii);
+			Individuo aux = poblacion.get(ii);
 			if(aux.getFitness()<min_fitness.getFitness()){
 				min_fitness = aux;
 			}
 		}
 		
-		for(int j=0; j<min_fitness.getCromosoma().size(); j++){
-			System.out.print(min_fitness.getCromosoma().get(j)+" ");
+		for(int j=0; j<min_fitness.getCromosoma().length; j++){
+			System.out.print(min_fitness.getCromosoma()[j]+" ");
 		}
 		System.out.println("\n"+min_fitness.getFitness());
 	}
