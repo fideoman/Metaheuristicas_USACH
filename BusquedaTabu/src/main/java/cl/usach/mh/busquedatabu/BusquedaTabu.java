@@ -26,7 +26,7 @@ public class BusquedaTabu {
 	public static ArrayList<int[]> solucionesEncontradas = new ArrayList<int[]>();
 	public static ArrayList<int[]> mejoresSolucionesHistoricas = new ArrayList<int[]>();
 	
-	public static void ejecucion(ArrayList<Local> localesExt, ArrayList<Localidad> localidadesExt, int tenorExt, int[] solucionInicialExt, int numeroCiclosExt) throws IOException, URISyntaxException {
+	public static void ejecucion(ArrayList<Local> localesExt, ArrayList<Localidad> localidadesExt, int tenorExt, int[] solucionInicialExt, int numeroCiclosExt, boolean intercambiosCompletos, int limiteIntercambios) throws IOException, URISyntaxException {
 		// Búsqueda Tabú
 		// Lo más sencillo posible.
 		
@@ -36,6 +36,9 @@ public class BusquedaTabu {
 		int tenor = tenorExt; // Tenor
 		int[] solucionInicial = solucionInicialExt; // Solución Inicial
 		int numeroCiclos = numeroCiclosExt; // Repeticiones - Ciclos de búsqueda
+		
+		boolean intercambiosCompletosFlag = intercambiosCompletos; // Parámetro para activar, o no, una búsqueda en todos los mejores
+		int limiteIntercambiosNum = limiteIntercambios; // Si el flag anterior es "false", acá se puede especificar el límite.
 		// Fin de Parámetros
 		
 		// Guardemos nuestras soluciones. Guardaremos: Soluciones encontradas, y mejor Solución histórica en X iteración
@@ -74,8 +77,13 @@ public class BusquedaTabu {
 			// 6) Ordenemos los vecinos por costo ascendente, dado que estamos buscando los menores
 			List<int[]> mejoresVecinos = costosVecinosEvaluados.entrySet().stream().sorted(Map.Entry.comparingByValue()).map(Map.Entry::getKey).collect(Collectors.toList());
 			
+			// Si vamos a recorrer todos los mejores vecinos, será el tamaño completo de éste arreglo, según el parámetro
+			if(intercambiosCompletosFlag) {
+				limiteIntercambiosNum = mejoresVecinos.size();
+			}
+			
 			// 7) Recorremos los mejores vecinos.
-			for (int i = 0; i < mejoresVecinos.size(); i++) {
+			for (int i = 0; i < limiteIntercambiosNum; i++) {
 				// ¿Será que se generó con un movimiento Prohibido?
 				if (listaTabu.containsKey(movimientosVecinosEvaluados.get(mejoresVecinos.get(i)))) {
 					// Es un vecino generado por un movimiento prohibido.

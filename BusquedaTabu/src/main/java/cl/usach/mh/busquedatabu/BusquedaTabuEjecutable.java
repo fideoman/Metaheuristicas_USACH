@@ -36,12 +36,14 @@ public class BusquedaTabuEjecutable {
 		int tenor = 5; // Tenor
 		int[] solucionInicial = new int [] {1,8,5,11,2,4,7,10,9,6,12,3}; // Solución Inicial
 		int numeroCiclos = 500; // Repeticiones - Ciclos de búsqueda
+		boolean intercambiosCompletos = false; // Parámetro para activar, o no, una búsqueda en todos los mejores
+		int limiteIntercambios = 4; // Si el flag anterior es "false", acá se puede especificar el límite.
 		// Fin de Parámetros	
 		
 		cargarDatosQAP("nug12.qap");
 		
 		// Busqueda Tabu
-		BusquedaTabu.ejecucion(locales, localidades, tenor, solucionInicial, numeroCiclos);
+		BusquedaTabu.ejecucion(locales, localidades, tenor, solucionInicial, numeroCiclos, intercambiosCompletos, limiteIntercambios);
 		
 		grafico("Tenor: " + tenor + " | Mejor Resultado: " + (BusquedaTabu.calculoCosto(BusquedaTabu.mejorSolucionHistorica) == 578 ? "578 (El mejor del mundo)" : BusquedaTabu.calculoCosto(BusquedaTabu.mejorSolucionHistorica) + " (578 es el mejor del mundo)"), "Todas", "Mejor", BusquedaTabu.solucionesEncontradas, BusquedaTabu.mejoresSolucionesHistoricas);
 	}
