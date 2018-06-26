@@ -91,10 +91,13 @@ public class AlgoritmoGenetico {
 		// 3) Generaci�n de una poblacion inicial aleatoria
 		ArrayList<Individuo> poblacion = new ArrayList<Individuo>();
 				
+		ArrayList<int[]> combSol = new ArrayList<int[]>();
+		(new Combinations(largoGenotipo,2)).iterator().forEachRemaining(combSol::add);
+		
 		Individuo ind = new Individuo(solucionInicial);
 		
 		for(int i=0; i<tamanioPoblacion; i++){ 
-			ind.intercambioFijo(todasCombinacionesUnicas.get(i)); // Intercambio fijo. Así aseguramos una población inicial, para comparaciones justas.
+			ind.intercambioFijo(combSol.get(i)); // Intercambio fijo. Así aseguramos una población inicial, para comparaciones justas.
 			if (!hibrido) {
 				Fitness.calculoFitness(ind);
 			} else {
