@@ -30,6 +30,12 @@ public class Individuo {
 		genotipo = gen;
 	}
 	
+	public void intercambioInterno() {
+		List<Integer> alAzar = Arrays.stream(genotipo).boxed().collect(Collectors.toList());
+		Collections.shuffle(alAzar);
+		genotipo = alAzar.stream().mapToInt(Integer::valueOf).toArray();
+	}
+	
 	/**
 	 * Contruye un individuo inicial generado aleatoriamente.
 	 *
