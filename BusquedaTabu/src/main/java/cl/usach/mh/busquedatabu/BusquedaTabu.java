@@ -75,6 +75,8 @@ public class BusquedaTabu {
 		mejorSolucionActual = solucionInicial;
 		
 		for (int numeroIteracion = 1; numeroIteracion <= numeroCiclos; numeroIteracion++) { // Ciclo central
+			//System.out.println("Porcentaje de completitud: " + Math.round((((double) numeroIteracion) / ((double) numeroCiclos))*100) + "%");
+			
 			// 5) Por cada combinaci�n aplico un intercambio (swap) y almaceno sus evaluaciones y par de intercambio (swap) asociado en un mapa
 			// Nota: Se hace el intercambio en una copia. No tocamos soluci�n actual
 			DualHashBidiMap<int[], String> movimientosVecinosEvaluados = new DualHashBidiMap<int[], String>();
