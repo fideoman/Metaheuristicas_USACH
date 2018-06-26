@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="usr/lib/objenesis-2.6.jar"/>
 	<classpathentry kind="lib" path="usr/lib/jcommon-1.0.20.jar"/>
 	<classpathentry kind="lib" path="usr/lib/jfreechart-1.0.15.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/BusquedaTabu"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

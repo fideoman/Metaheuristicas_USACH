@@ -10,15 +10,15 @@ import java.util.ArrayList;
 public class Imprimir {
 	
 	/**
-	 * Imprime la poblacion completa. Imprime el cromosoma y el fitness de todos
+	 * Imprime la poblacion completa. Imprime el genotipo y el fitness de todos
 	 * los indiviudos de la poblacion.
 	 *
 	 * @param poblacion la poblacion actual
 	 */
 	public static void imprimirPoblacion(ArrayList<Individuo> poblacion){
 		for(int i=0; i<poblacion.size();i++){
-			for(int j=0; j<poblacion.get(i).getCromosoma().length;j++){
-				System.out.print(poblacion.get(i).getCromosoma()[j]+" ");
+			for(int j=0; j<poblacion.get(i).getGenotipo().length;j++){
+				System.out.print(poblacion.get(i).getGenotipo()[j]+" ");
 			}
 			System.out.println("\n"+poblacion.get(i).getFitness()+"\n");
 		}
@@ -26,7 +26,7 @@ public class Imprimir {
 	
 	/**
 	 * Busca la mejor solucion, es decir, la que tiene el menor fitness
-	 * dentro de toda la poblacion. Imprime el cromosoma y el fitness del
+	 * dentro de toda la poblacion. Imprime el genotipo y el fitness del
 	 * mejor individuo de la poblacion.
 	 *
 	 * @param poblacion la poblacion actual
@@ -41,8 +41,8 @@ public class Imprimir {
 			}
 		}
 		
-		for(int j=0; j<min_fitness.getCromosoma().length; j++){
-			System.out.print(min_fitness.getCromosoma()[j]+" ");
+		for(int j=0; j<min_fitness.getGenotipo().length; j++){
+			System.out.print(min_fitness.getGenotipo()[j]+" ");
 		}
 		System.out.println("\n"+min_fitness.getFitness());
 	}

@@ -1,10 +1,14 @@
 package cl.usach.mh.algoritmogenetico.poblacion;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 import cl.usach.mh.algoritmogenetico.AlgoritmoGenetico;
 import cl.usach.mh.algoritmogenetico.Individuo;
+import cl.usach.mh.busquedatabu.BusquedaTabu;
 
 /**
- * Clase para obtener el fitness de un cromosoma (o solucion).
+ * Clase para obtener el fitness de un genotipo (o solucion).
  * @author Jose Manuel Rosell Sanchez
  * Adaptado y mejorado por Isaac Silva
  */
@@ -17,11 +21,11 @@ public class Fitness {
 	 * @param distancias las distancias entre las fabricas
 	 * @param pesos los pesos entre las fabricas
 	 */
-	public static void fitnessCromosoma(Individuo i1){
-		// i1.getCromosoma() es la soluci�n propuesta de entrada
+	public static void calculoFitness(Individuo i1){
+		// i1.getGenotipo() es la soluci�n propuesta de entrada
 		// li.fitness es la salida esperada (costo)
 		
-		int[] solucionInicial = i1.getCromosoma();
+		int[] solucionInicial = i1.getGenotipo();
 		
         int costo = 0;
 		for (int i = 0; i < solucionInicial.length; i++) {
@@ -46,38 +50,18 @@ public class Fitness {
 	}
 	
 	/**
-	 * Calcular el fitness de una solucion obtienen el mejor fitness para el un cromosoma dado, utilizando para ello
-	 * un algoritmo Goloso. Se calcula el mejor fitness pero no se modifica el cromosoma del individuo, unicamente se
-	 * modifica el fitness.
+	 * Calcular el fitness de una solucion obtienen el mejor fitness para el un genotipo dado, utilizando para ello
+	 * una Búsqueda Tabú relajada, para no sobrecargar la rutina
 	 *
 	 * @param i1 el individuo del cual obtener el fitness
 	 * @param distancias las distancias entre las fabricas
 	 * @param pesos los pesos entre las fabricas
+	 * @throws URISyntaxException 
+	 * @throws IOException 
 	 */
-	public static void fitnessGoloso(Individuo i1){
-		fitnessCromosoma(i1);
-
-		Individuo aux = new Individuo();
-		aux = HeuristicaGolosa.mejorSolucion(i1);
-		i1.setFitness(aux.getFitness());
-	}
-	
-	/**
-	 * Calcular el fitness de una solucion obtienen el mejor fitness para el un cromosoma dado, utilizando para ello
-	 * un algoritmo Goloso. Se calcula el mejor fitness y se modifica el cromosoma del individuo, ademas de 
-	 * modificar el fitness del individuo.
-	 *
-	 * @param i1 el individuo del cual obtener el fitness
-	 * @param distancias las distancias entre las fabricas
-	 * @param pesos los pesos entre las fabricas
-	 */
-	public static void fitnessGolosoModifica(Individuo i1){
-		fitnessCromosoma(i1);
-
-		Individuo aux = new Individuo();
-		aux = HeuristicaGolosa.mejorSolucion(i1);
-		
-		i1.setFitness(aux.getFitness());
-		i1.setCromosoma(aux.getCromosoma());
-	}
+	public static void calculoFitnessHibrido(Individuo i1, int tenor, int numeroCiclosTotales, int limiteIntercambios) throws IOException, URISyntaxException{
+		BusquedaTabu.ejecucion(AlgoritmoGenetico.locales, AlgoritmoGenetico.localidades, tenor, i1.getGenotipo(), numeroCiclosTotales, false, limiteIntercambios, false, 50, false, 10, 10);
+		i1.setGenotipo(BusquedaTabu.mejorSolucionHistorica);
+		calculoFitness(i1);
+	}	
 }

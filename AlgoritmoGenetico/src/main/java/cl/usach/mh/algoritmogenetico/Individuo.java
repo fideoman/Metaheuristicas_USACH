@@ -20,22 +20,26 @@ public class Individuo {
 	private int fitness;
 	
 	/** La disposicion de las fabricas / locales. */
-	private int[] cromosoma;
+	private int[] genotipo;
 		
 	public Individuo() {
 		fitness = 0;
 	}
 	
+	public Individuo(int[] gen) {
+		genotipo = gen;
+	}
+	
 	/**
 	 * Contruye un individuo inicial generado aleatoriamente.
 	 *
-	 * @param size tamaño del cromosoma (num. de fabricas)
+	 * @param size tamaï¿½o del genotipo (num. de fabricas)
 	 */
 	public Individuo(int largo){
 		fitness = 0;
 		List<Integer> alAzar = IntStream.range(1, largo+1).boxed().collect(Collectors.toCollection(ArrayList::new));
 		Collections.shuffle(alAzar);
-		cromosoma = alAzar.stream().mapToInt(Integer::valueOf).toArray();
+		genotipo = alAzar.stream().mapToInt(Integer::valueOf).toArray();
 	}
 	
 	/**
@@ -46,7 +50,7 @@ public class Individuo {
 	 */
 	public boolean compareTo(Individuo individuo){	
 		
-		if(Arrays.equals(cromosoma, individuo.cromosoma)){
+		if(Arrays.equals(genotipo, individuo.genotipo)){
 			return true;
 		}
 		
@@ -72,20 +76,20 @@ public class Individuo {
 	}
 
 	/**
-	 * Obtiene el cromosoma.
+	 * Obtiene el genotipo.
 	 *
-	 * @return el cromosoma
+	 * @return el genotipo
 	 */
-	public int[] getCromosoma() {
-		return cromosoma;
+	public int[] getGenotipo() {
+		return genotipo;
 	}
 
 	/**
-	 * Establece el cromosoma.
+	 * Establece el genotipo.
 	 *
-	 * @param cromosoma el nuevo cromosoma cromosoma
+	 * @param genotipo el nuevo genotipo genotipo
 	 */
-	public void setCromosoma(int[] cromosoma) {
-		this.cromosoma = (new Cloner()).deepClone(cromosoma);
+	public void setGenotipo(int[] genotipo) {
+		this.genotipo = (new Cloner()).deepClone(genotipo);
 	}
 }

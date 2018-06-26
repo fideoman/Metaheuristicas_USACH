@@ -2,6 +2,7 @@ package cl.usach.mh.algoritmogenetico;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,8 +24,8 @@ import org.jfree.data.xy.XYSeriesCollection;
 import cl.usach.mh.algoritmogenetico.cruzamiento.Cruce;
 import cl.usach.mh.algoritmogenetico.mutacion.Mutacion;
 import cl.usach.mh.algoritmogenetico.poblacion.Fitness;
-import cl.usach.mh.algoritmogenetico.qap.Local;
-import cl.usach.mh.algoritmogenetico.qap.Localidad;
+import cl.usach.mh.busquedatabu.qap.Local;
+import cl.usach.mh.busquedatabu.qap.Localidad;
 import cl.usach.mh.algoritmogenetico.seleccion.Seleccion;
 
 /**
@@ -34,76 +35,89 @@ import cl.usach.mh.algoritmogenetico.seleccion.Seleccion;
  */
 public class AlgoritmoGenetico {
 
-	// Variables estáticas que no cambian, libres de ser accesadas
+	// Variables estï¿½ticas que no cambian, libres de ser accesadas
 	public static ArrayList<int[]> todasCombinacionesUnicas = new ArrayList<int[]>(); 	
 	public static ArrayList<Local> locales = new ArrayList<Local>();
 	public static ArrayList<Localidad> localidades = new ArrayList<Localidad>();	
-	public static int largoCromosoma = 0;	
+	public static int largoGenotipo = 0;	
 	
 	/**
 	 * El metodo main
 	 *
 	 * @param args los argumentos
 	 * @throws URISyntaxException 
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) throws URISyntaxException {
+	public static void main(String[] args) throws URISyntaxException, IOException {
 		
 		// 0) Contador de salida de soluciones
 		ArrayList<Integer> mejores = new ArrayList<Integer>();
 		ArrayList<Integer> todos = new ArrayList<Integer>();
 		
-		// 1) Cargar los datos de distancia y flujos en listas estáticas, listas para cálculos
-		cargarDatosQAP("nug12.qap");
+		// 1) Cargar los datos de distancia y flujos en listas estï¿½ticas, listas para cï¿½lculos
+		cargarDatosQAP("esc32a.qap");
 		
-		// 2) Carga de parámetros: Tamaño de población, número de poblaciones y tipo de ejecución del algoritmo
-		int tamanioPoblacion = 10;
-		int numeroPoblaciones = 15;
-		int tipoCalculoFitness = 1; // 1: Estándar | 2: Estándar + Fitness mejorado (Busqueda Local) | 3: Estándar + Fitness y cromosoma (Busqueda Local)
-		// Fin de parámetros
+		// 2) Carga de parï¿½metros: Tamaï¿½o de poblaciï¿½n, nï¿½mero de poblaciones y tipo de ejecuciï¿½n del algoritmo
+		int tamanioPoblacion = 1000;
+		int numeroPoblaciones = 500;
+		boolean hibrido = false; // false : Normal - true : AG + Busqueda Tabu
+		// ParÃ¡metros del Tabu Search
+		int tenor = 2;
+		int numeroCiclosTotales = 20;
+		int limiteIntercambios = 4;
+		// Fin de parï¿½metros
 		
-		// La siguiente línea genera todos los posibles pares no repetidos del tamaño de la población.
-		// Muy útil para hacer el azar más exácto
+		// La siguiente lï¿½nea genera todos los posibles pares no repetidos del tamaï¿½o de la poblaciï¿½n.
+		// Muy ï¿½til para hacer el azar mï¿½s exï¿½cto. SÃ³lo gasto al comienzo.
 		(new Combinations(tamanioPoblacion,2)).iterator().forEachRemaining(todasCombinacionesUnicas::add);
 		
-		// 3) Generación de una poblacion inicial aleatoria
+		// 3) Generaciï¿½n de una poblacion inicial aleatoria
 		ArrayList<Individuo> poblacion = new ArrayList<Individuo>();
 				
 		for(int i=0; i<tamanioPoblacion; i++){ 
-			Individuo ind = new Individuo(largoCromosoma);
-			switch (tipoCalculoFitness) {
-			case 1: //Estandar. Obtiene el Fitness directamente
-				Fitness.fitnessCromosoma(ind);
-				break;
-			case 2: //Baldwiniana. Obtiene Fitness del individuo y sobre éste busca la mejor solucion usando una Busqueda Local Golosa (Hibrido)
-				Fitness.fitnessGoloso(ind);
-				break;
-			case 3: //Lamarckiana. Obtiene Fitness del individuo y sobre éste busca la mejor solucion Y cromosoma usando una Busqueda Local Golosa (Hibrido)
-				Fitness.fitnessGolosoModifica(ind);
-				break;
-			default:
-				break;
-			}			
+			Individuo ind = new Individuo(largoGenotipo);
+			if (!hibrido) {
+				Fitness.calculoFitness(ind);
+			} else {
+				Fitness.calculoFitnessHibrido(ind, tenor, numeroCiclosTotales, limiteIntercambios);
+			}					
+			System.out.println("Individuo inicial #" + (i + 1) + " aÃ±adido. Total: " + tamanioPoblacion);
 			poblacion.add(ind);
 		}
 		int mejorFitness = 0;
-		// Fin de población inicial alaetoria		
+		// Fin de poblaciï¿½n inicial alaetoria		
 		
-		// 4) Ciclo central. Criterio de parada: Número de Iteraciones / Poblaciones
+		// 4) Ciclo central. Criterio de parada: Nï¿½mero de Iteraciones / Poblaciones
 		for(int j=0; j<numeroPoblaciones; j++){
-			// 5) Selecciono los padres. Sabemos de tres métodos a la fecha: Azar, Ruleta y Torneo
-			// Acá se implementa el método de selección de torneo (elitista)
+			// 5) Selecciono los padres. Sabemos de tres mï¿½todos a la fecha: Azar, Ruleta y Torneo
+			// Acï¿½ se implementa el mï¿½todo de selecciï¿½n de torneo (elitista)
 			ArrayList<Individuo> padres = Seleccion.porTorneo(poblacion);
 			
 			// Operador de cruce			
-			ArrayList<Individuo> hijos = Cruce.cruzamientoEnUnPunto(padres, tipoCalculoFitness);
-
+			ArrayList<Individuo> hijos = Cruce.cruzamientoEnUnPunto(padres, hibrido, tenor, numeroCiclosTotales, limiteIntercambios);
+			
 			// Operador de mutacion
-			ArrayList<Individuo> hijosMutados = Mutacion.mutarPoblacion(hijos);
+			ArrayList<Individuo> hijosMutados = Mutacion.mutarPoblacion(hijos, hibrido, tenor, numeroCiclosTotales, limiteIntercambios);
 			
-			// La evolución más fácil: Los nuevos hijos son la nueva población			
-			poblacion = hijosMutados;
+			// Recomendaciones generales en http://www.baeldung.com/java-genetic-algorithm
+			// Tasa de cruze: 90%
+			// Tasa de mutaciÃ³n: 2%
+			// Mejores padres: 8%
+			int cantidadCruze = (int) Math.round((double) tamanioPoblacion * 0.9);
+			int cantidadMutacion = (int) Math.round((double) tamanioPoblacion * 0.02);
+			int cantidadPadresTop = (int) Math.round((double) tamanioPoblacion * 0.08);
+			int diff = tamanioPoblacion - (cantidadCruze + cantidadMutacion + cantidadPadresTop);
+			if(diff > 0) {
+				cantidadCruze += diff;
+			}
 			
-			// Obtengamos el mejor de la población
+			List<Individuo> poblacionFinal = hijos.subList(0, cantidadCruze);
+			poblacionFinal.addAll(hijosMutados.subList(0, cantidadMutacion));
+			poblacionFinal.addAll(padres.subList(0, cantidadPadresTop));
+			poblacion = new ArrayList<Individuo>(poblacionFinal);
+
+			// Rutina de obtenciÃ³n de los mejores
+			// Obtengamos el mejor de la poblaciï¿½n
 			Individuo min_fitness;
 			min_fitness = poblacion.get(0);
 			for(int ii=0; ii<poblacion.size();ii++){
@@ -121,10 +135,11 @@ public class AlgoritmoGenetico {
 				mejorFitness = min_fitness.getFitness();
 			}
 			mejores.add(mejorFitness);
+			//
 			
-			System.out.println("# Población procesada: " + (j + 1) + ". Total: " + numeroPoblaciones);
+			System.out.println("PoblaciÃ³n procesada #: " + (j + 1) + ". Total: " + numeroPoblaciones);
 		}
-		grafico("Mejor Resultado: " + (mejorFitness == 578 ? "578 (El mejor del mundo)" : mejorFitness + " (578 es el mejor del mundo)"), "Todas", "Mejor", todos, mejores);		
+		grafico("Mejor Resultado: " + mejorFitness, "Todas", "Mejor", todos, mejores);		
 	}
 	
 	public static void cargarDatosQAP(String archivoQAPLIB) throws URISyntaxException {
@@ -137,17 +152,17 @@ public class AlgoritmoGenetico {
 		try {
 			Scanner sc = new Scanner(new File(cargadorContexto.getResource(archivoQAPLIB).toURI()));
 			if (sc.hasNextInt()) {
-				largoCromosoma = sc.nextInt();
+				largoGenotipo = sc.nextInt();
 			}
-			for (int i = 0; i < largoCromosoma; i++) {
+			for (int i = 0; i < largoGenotipo; i++) {
 				distancias.add(new ArrayList<Integer>());
-				for (int j = 0; j < largoCromosoma; j++) {
+				for (int j = 0; j < largoGenotipo; j++) {
 					distancias.get(i).add(sc.nextInt());
 				}
 			}
-			for (int i = 0; i < largoCromosoma; i++) {
+			for (int i = 0; i < largoGenotipo; i++) {
 				flujos.add(new ArrayList<Integer>());
-				for (int j = 0; j < largoCromosoma; j++) {
+				for (int j = 0; j < largoGenotipo; j++) {
 					flujos.get(i).add(sc.nextInt());
 				}
 			}
@@ -156,7 +171,7 @@ public class AlgoritmoGenetico {
 			e.printStackTrace();
 		}
 
-		secuenciaBase = IntStream.rangeClosed(1, largoCromosoma).boxed().collect(Collectors.toList());
+		secuenciaBase = IntStream.rangeClosed(1, largoGenotipo).boxed().collect(Collectors.toList());
 
 		// 1) Eliminamos la diagonal cero.
 		for (int i = 0; i < flujos.size(); i++) {
@@ -180,7 +195,7 @@ public class AlgoritmoGenetico {
 		// 2) Encapsulamos los objetos
 		for (int i = 1; i <= flujos.size(); i++) {
 			Local local = new Local();
-			int[] conjuntoComplemento = new int[largoCromosoma - 1];
+			int[] conjuntoComplemento = new int[largoGenotipo - 1];
 			for (int j = 1; j <= conjuntoComplemento.length + 1; j++) {
 				if (i == secuenciaBase.get(j - 1)) {
 					ArrayList<Integer> copiaSecuencia = new ArrayList<Integer>(secuenciaBase);
