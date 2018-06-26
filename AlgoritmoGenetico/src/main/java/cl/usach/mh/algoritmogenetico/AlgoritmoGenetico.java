@@ -75,8 +75,8 @@ public class AlgoritmoGenetico {
 		//int[] solucionInicial = new int[] {48, 11, 21, 40, 20, 82, 108, 128, 75, 56, 5, 15, 124, 46, 55, 63, 64, 106, 26, 4, 34, 86, 116, 57, 18, 93, 84, 9, 50, 90, 7, 94, 33, 85, 87, 114, 22, 1, 31, 52, 97, 112, 27, 41, 6, 78, 121, 12, 118, 110, 74, 61, 127, 99, 45, 95, 10, 123, 117, 72, 35, 2, 100, 69, 19, 16, 17, 76, 113, 66, 44, 71, 96, 59, 77, 92, 67, 105, 88, 107, 102, 73, 8, 83, 81, 120, 65, 111, 28, 91, 29, 23, 80, 38, 42, 54, 47, 109, 70, 98, 37, 14, 30, 125, 3, 39, 62, 122, 32, 25, 68, 53, 104, 79, 103, 36, 89, 58, 126, 13, 101, 115, 43, 119, 51, 49, 24, 60};
 		
 		// 2) Carga de par�metros: Tama�o de poblaci�n, n�mero de poblaciones y tipo de ejecuci�n del algoritmo
-		int tamanioPoblacion = 1000;
-		int numeroPoblaciones = 500;
+		int tamanioPoblacion = 100;
+		int numeroPoblaciones = 100;
 		boolean hibrido = false; // false : Normal - true : AG + Busqueda Tabu
 		// Parámetros del Tabu Search
 		int tenor = 2;
@@ -94,7 +94,7 @@ public class AlgoritmoGenetico {
 		Individuo ind = new Individuo(solucionInicial);
 		
 		for(int i=0; i<tamanioPoblacion; i++){ 
-			ind.intercambioInterno(); // Intercambio aleatorio
+			ind.intercambioFijo(todasCombinacionesUnicas.get(i)); // Intercambio fijo. Así aseguramos una población inicial, para comparaciones justas.
 			if (!hibrido) {
 				Fitness.calculoFitness(ind);
 			} else {
@@ -158,7 +158,7 @@ public class AlgoritmoGenetico {
 			
 			System.out.println("Población procesada #: " + (j + 1) + ". Total: " + numeroPoblaciones);
 		}
-		grafico("Mejor Resultado: " + mejorFitness, "Todas", "Mejor", todos, mejores);		
+		grafico("Mejor Resultado: " + mejorFitness, "Mejor de la Población X", "Mejor Histórico", todos, mejores);		
 	}
 	
 	public static void cargarDatosQAP(String archivoQAPLIB) throws URISyntaxException {
@@ -251,7 +251,7 @@ public class AlgoritmoGenetico {
 		final XYSeriesCollection datos = new XYSeriesCollection();
 		datos.addSeries(serie1);
 		datos.addSeries(serie2);
-		final JFreeChart chart = ChartFactory.createXYLineChart(titulo, "Iteraciones", "Costos", datos,
+		final JFreeChart chart = ChartFactory.createXYLineChart(titulo, "Poblaciones", "Fitness", datos,
 				PlotOrientation.VERTICAL, true, true, false);
 
 		ChartFrame frame = new ChartFrame(titulo,chart);

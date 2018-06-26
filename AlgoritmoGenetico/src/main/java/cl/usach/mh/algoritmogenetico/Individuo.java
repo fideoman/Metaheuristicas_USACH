@@ -36,6 +36,12 @@ public class Individuo {
 		genotipo = alAzar.stream().mapToInt(Integer::valueOf).toArray();
 	}
 	
+	public void intercambioFijo(int[] par) {
+		List<Integer> cambio = Arrays.stream(genotipo).boxed().collect(Collectors.toList());
+		Collections.swap(cambio, cambio.indexOf(par[0]+1), cambio.indexOf(par[1]+1));
+		genotipo = cambio.stream().mapToInt(Integer::valueOf).toArray();
+	}
+	
 	/**
 	 * Contruye un individuo inicial generado aleatoriamente.
 	 *
