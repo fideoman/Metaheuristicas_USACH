@@ -29,25 +29,29 @@ public class BusquedaTabuEjecutable {
 	public static ArrayList<Localidad> localidades = new ArrayList<Localidad>();	
 	
 	public static void main(String[] args) throws IOException, URISyntaxException {
-		// Búsqueda Tabú
-		// Lo más sencillo posible.
+		// Bï¿½squeda Tabï¿½
+		// Lo mï¿½s sencillo posible.
 		
-		// Parámetros del programa:
+		// Parï¿½metros del programa:
 		int tenor = 5; // Tenor
-		int[] solucionInicial = new int [] {1,8,5,11,2,4,7,10,9,6,12,3}; // Solución Inicial
-		int numeroCiclos = 500; // Repeticiones - Ciclos de búsqueda
+		int[] solucionInicial = new int [] {1,8,5,11,2,4,7,10,9,6,12,3}; // Soluciï¿½n Inicial
+		int numeroCiclos = 500; // Repeticiones - Ciclos de bï¿½squeda
 		
-		boolean intercambiosCompletos = false; // Parámetro para activar, o no, una búsqueda en todos los mejores
-		int limiteIntercambios = 4; // Si el flag anterior es "false", acá se puede especificar el límite.
+		boolean intercambiosCompletos = false; // Parï¿½metro para activar, o no, una bï¿½squeda en todos los mejores
+		int limiteIntercambios = 4; // Si el flag anterior es "false", acï¿½ se puede especificar el lï¿½mite.
 		
-		boolean diversifico = true; // Parámetro donde especifico si diversifico o no
-		int ciclosDiversificacion = 50; // Si el anterior es "Si", se diversificará en éste período
-		// Fin de Parámetros	
+		boolean diversifico = true; // Parï¿½metro donde especifico si diversifico o no
+		int ciclosDiversificacion = 50; // Si el anterior es "Si", se diversificarï¿½ en ï¿½ste perï¿½odo
+		
+		boolean intensifico = true; // ParÃ¡metro donde especifico su intensifico o no
+		int numeroSolucionesSinMejorar = 10; // Si el anterior es "Si", se intensificarÃ¡ cuando hayan 10 soluciones sin mejorar
+		int porcentajeIntensificacion = 10; // Porcentaje de cuan agresiva serÃ¡ la intensificaciÃ³n
+		// Fin de Parï¿½metros	
 		
 		cargarDatosQAP("nug12.qap");
 		
 		// Busqueda Tabu
-		BusquedaTabu.ejecucion(locales, localidades, tenor, solucionInicial, numeroCiclos, intercambiosCompletos, limiteIntercambios, diversifico, ciclosDiversificacion);
+		BusquedaTabu.ejecucion(locales, localidades, tenor, solucionInicial, numeroCiclos, intercambiosCompletos, limiteIntercambios, diversifico, ciclosDiversificacion, intensifico, numeroSolucionesSinMejorar, porcentajeIntensificacion);
 		
 		grafico("Tenor: " + tenor + " | Mejor Resultado: " + (BusquedaTabu.calculoCosto(BusquedaTabu.mejorSolucionHistorica) == 578 ? "578 (El mejor del mundo)" : BusquedaTabu.calculoCosto(BusquedaTabu.mejorSolucionHistorica) + " (578 es el mejor del mundo)"), "Todas", "Mejor", BusquedaTabu.solucionesEncontradas, BusquedaTabu.mejoresSolucionesHistoricas);
 	}
