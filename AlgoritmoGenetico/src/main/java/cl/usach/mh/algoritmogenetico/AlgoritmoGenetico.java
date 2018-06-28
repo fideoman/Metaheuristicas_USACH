@@ -143,6 +143,6 @@ public class AlgoritmoGenetico {
 			
 			System.out.println("Población procesada #: " + (j + 1) + ". Total: " + numeroPoblaciones);
 		}
-		QAP.grafico("Mejor Resultado: " + mejorSolucion, "Mejor de la Población X", "Mejor Histórico", todos, mejores);		
+		QAP.grafico("Mejor Resultado: " + QAP.calculoCosto(mejorSolucion), "Mejor de la Población X", "Mejor Histórico", todos, mejores);		
 	}
 }
