@@ -11,11 +11,11 @@ public class BusquedaTabuEjecutable {
 		// Busqueda Tabu
 		// Lo mas sencillo posible.
 		
-		//cargarDatosQAP("nug12.qap");
-		//cargarDatosQAP("chr25a.qap");
+		//QAP.cargarDatosQAP("qap/nug12.qap");
+		//QAP.cargarDatosQAP("qap/chr25a.qap");
 		QAP.cargarDatosQAP("qap/esc32a.qap");
-		//cargarDatosQAP("esc64a.qap");
-		//cargarDatosQAP("esc128.qap");		
+		//QAP.cargarDatosQAP("qap/esc64a.qap");
+		//QAP.cargarDatosQAP("qap/esc128.qap");		
 		
 		// Parmetros del programa:
 		int tenor = 5; // Tenor

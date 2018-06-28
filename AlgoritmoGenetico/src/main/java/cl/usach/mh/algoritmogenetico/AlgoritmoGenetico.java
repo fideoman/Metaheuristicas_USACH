@@ -39,11 +39,11 @@ public class AlgoritmoGenetico {
 		ArrayList<int[]> todos = new ArrayList<int[]>();
 		
 		// 1) Cargar los datos de distancia y flujos en listas estticas, listas para clculos
-		//cargarDatosQAP("nug12.qap");
-		//cargarDatosQAP("chr25a.qap");
+		//QAP.cargarDatosQAP("qap/nug12.qap");
+		//QAP.cargarDatosQAP("qap/chr25a.qap");
 		QAP.cargarDatosQAP("qap/esc32a.qap");
-		//cargarDatosQAP("esc64a.qap");
-		//cargarDatosQAP("esc128.qap");	
+		//QAP.cargarDatosQAP("qap/esc64a.qap");
+		//QAP.cargarDatosQAP("qap/esc128.qap");	
 		
 		// De 12:
 		//int[] solucionInicial = new int[] {8, 5, 6, 1, 7, 12, 4, 3, 11, 10, 9, 2};
