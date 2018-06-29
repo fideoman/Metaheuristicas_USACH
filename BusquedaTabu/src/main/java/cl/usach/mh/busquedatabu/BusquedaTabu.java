@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.apache.commons.numbers.combinatorics.Combinations;
@@ -120,15 +119,13 @@ public class BusquedaTabu {
 							double porcPenalizacion = fracMovimiento / totalFrec;
 							// Se lo aplico al costo actual
 							int costoPenalizado = (int) Math.round((costosVecinosEvaluados.get((mejoresVecinos.get(i)))*porcPenalizacion) + costosVecinosEvaluados.get(mejoresVecinos.get(i)));
-													
-							List<Integer> alAzar = IntStream.range(1, solucionInicial.length+1).boxed().collect(Collectors.toCollection(ArrayList::new));
-							Collections.shuffle(alAzar);
 							
-							int[] costoNuevo = alAzar.stream().mapToInt(Integer::valueOf).toArray();
+							// Sacaremos un costo nuevo al azar, para penalizar
+							int[] costoNuevo = Operaciones.solucionAlAzar(solucionInicial.length+1);
+							
 							// Vamos por esa penalizacion
 							while(QAP.calculoCosto(costoNuevo) < costoPenalizado) {
-								Collections.shuffle(alAzar);
-								costoNuevo = alAzar.stream().mapToInt(Integer::valueOf).toArray();
+								costoNuevo = Operaciones.solucionAlAzar(solucionInicial.length+1);
 							}
 							// Penalizado.
 							mejoresVecinos.set(i, costoNuevo);
@@ -203,15 +200,13 @@ public class BusquedaTabu {
 						float porcPenalizacion = (fracMovimiento / totalFrec);
 						// Se lo aplico al costo actual
 						int costoPenalizado = (int) Math.round((costosVecinosEvaluados.get((mejoresVecinos.get(i)))*porcPenalizacion) + costosVecinosEvaluados.get(mejoresVecinos.get(i)));
-												
-						List<Integer> alAzar = IntStream.range(1, solucionInicial.length+1).boxed().collect(Collectors.toCollection(ArrayList::new));
-						Collections.shuffle(alAzar);
 						
-						int[] costoNuevo = alAzar.stream().mapToInt(Integer::valueOf).toArray();
+						// Sacaremos un costo nuevo que sea peor, para penalizar
+						int[] costoNuevo = Operaciones.solucionAlAzar(solucionInicial.length+1);
+						
 						// Vamos por esa penalizacion
 						while(QAP.calculoCosto(costoNuevo) < costoPenalizado) {
-							Collections.shuffle(alAzar);
-							costoNuevo = alAzar.stream().mapToInt(Integer::valueOf).toArray();
+							costoNuevo = Operaciones.solucionAlAzar(solucionInicial.length+1);
 						}
 						// Penalizado.
 						mejoresVecinos.set(i, costoNuevo);
