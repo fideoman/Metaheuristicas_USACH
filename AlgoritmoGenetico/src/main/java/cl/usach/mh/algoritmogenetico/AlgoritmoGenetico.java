@@ -72,14 +72,11 @@ public class AlgoritmoGenetico {
 		
 		// 3) Generacin de una poblacion inicial aleatoria
 		ArrayList<Individuo> poblacion = new ArrayList<Individuo>();
-				
-		ArrayList<int[]> combSol = new ArrayList<int[]>();
-		(new Combinations(QAP.getCantidad(),2)).iterator().forEachRemaining(combSol::add);
-		
+						
 		Individuo ind = new Individuo(solucionInicial);
 		
 		for(int i=0; i<tamanioPoblacion; i++){ 
-			ind.intercambioFijo(combSol.get(i)); // Intercambio fijo. Así aseguramos una población inicial, para comparaciones justas.
+			ind.intercambioFijo(QAP.paresUnicosSolucion[i]); // Intercambio fijo. Así aseguramos una población inicial, para comparaciones justas.
 			if (!hibrido) {
 				Fitness.calculoFitness(ind);
 			} else {
@@ -100,7 +97,7 @@ public class AlgoritmoGenetico {
 			// Operador de cruce			
 			ArrayList<Individuo> hijos = Cruce.cruzamientoEnUnPunto(padres, hibrido, tenor, numeroCiclosTotales, limiteIntercambios);
 			
-			// Operador de mutacion
+			// Operador de mutacion (En este caso, aleatorio)
 			ArrayList<Individuo> hijosMutados = Mutacion.mutarPoblacion(hijos, hibrido, tenor, numeroCiclosTotales, limiteIntercambios);
 			
 			// Recomendaciones generales en http://www.baeldung.com/java-genetic-algorithm

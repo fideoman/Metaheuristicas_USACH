@@ -1,13 +1,8 @@
 package cl.usach.mh.algoritmogenetico;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import com.rits.cloning.Cloner;
+
+import cl.usach.mh.comunes.utilidades.representacionordinal.Operaciones;
 
 /**
  * Representacion de las soluciones al problema.
@@ -17,29 +12,21 @@ import com.rits.cloning.Cloner;
 public class Individuo {
 	
 	/** El fitness de la solucion. */
-	private int fitness;
+	private int fitness = 0;
 	
 	/** La disposicion de las fabricas / locales. */
-	private int[] genotipo;
-		
-	public Individuo() {
-		fitness = 0;
-	}
+	private int[] genotipo;		
 	
 	public Individuo(int[] gen) {
 		genotipo = gen;
 	}
 	
-	public void intercambioInterno() {
-		List<Integer> alAzar = Arrays.stream(genotipo).boxed().collect(Collectors.toList());
-		Collections.shuffle(alAzar);
-		genotipo = alAzar.stream().mapToInt(Integer::valueOf).toArray();
+	public void intercambioAleatorioInterno() {
+		genotipo = Operaciones.intercambioAlAzar(genotipo);
 	}
 	
 	public void intercambioFijo(int[] par) {
-		List<Integer> cambio = Arrays.stream(genotipo).boxed().collect(Collectors.toList());
-		Collections.swap(cambio, cambio.indexOf(par[0]+1), cambio.indexOf(par[1]+1));
-		genotipo = cambio.stream().mapToInt(Integer::valueOf).toArray();
+		genotipo = Operaciones.intercambio(genotipo, par[0], par[1]);
 	}
 	
 	/**
@@ -48,27 +35,9 @@ public class Individuo {
 	 * @param size tamao del genotipo (num. de fabricas)
 	 */
 	public Individuo(int largo){
-		fitness = 0;
-		List<Integer> alAzar = IntStream.range(1, largo+1).boxed().collect(Collectors.toCollection(ArrayList::new));
-		Collections.shuffle(alAzar);
-		genotipo = alAzar.stream().mapToInt(Integer::valueOf).toArray();
+		genotipo = Operaciones.solucionAlAzar(largo);
 	}
-	
-	/**
-	 * Compara dos individuos. Devuelve true si son iguales; false en otro caso.
-	 *
-	 * @param individuo individuo con el que comparar
-	 * @return true, si son iguales; false, si no lo son
-	 */
-	public boolean compareTo(Individuo individuo){	
 		
-		if(Arrays.equals(genotipo, individuo.genotipo)){
-			return true;
-		}
-		
-		return false;
-	}
-	
 	/**
 	 * Obtiene el fitness.
 	 *

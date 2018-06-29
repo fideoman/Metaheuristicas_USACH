@@ -63,6 +63,7 @@ public class Cruce {
 			// Obtengo el punto de cruce, al azar
 			int pos = (new Random()).nextInt(((QAP.getCantidad() - 2) - 1) + 1) + 1;
 
+			// Cruzamiento
 			for (int i = pos; i <= genotipoHijoArray.size(); i++) {
 				for(int j = 0; j < genotipoPadre2.length; j++) {
 					if(!genotipoHijoArray.subList(0, i).contains(genotipoPadre2[j])) {
