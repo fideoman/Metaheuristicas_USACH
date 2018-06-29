@@ -16,6 +16,7 @@ import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.apache.commons.numbers.combinatorics.Combinations;
 
 import cl.usach.mh.comunes.qap.QAP;
+import cl.usach.mh.comunes.utilidades.representacionordinal.Operaciones;
 
 public class BusquedaTabu {
 			
@@ -76,10 +77,8 @@ public class BusquedaTabu {
 			DualHashBidiMap<int[], String> movimientosVecinosEvaluados = new DualHashBidiMap<int[], String>();
 			DualHashBidiMap<int[], Integer> costosVecinosEvaluados = new DualHashBidiMap<int[], Integer>();
 			for(int[] par : pares) {
-				List<Integer> copiaSolucionActual = Arrays.stream(mejorSolucionActual).boxed().collect(Collectors.toList());
 				// 5a) Hago el intercambio (swap)
-				Collections.swap(copiaSolucionActual, copiaSolucionActual.indexOf(par[0]), copiaSolucionActual.indexOf(par[1]));
-				int[] vecino = copiaSolucionActual.stream().mapToInt(Integer::valueOf).toArray();
+				int[] vecino = Operaciones.intercambio(mejorSolucionActual, mejorSolucionActual[par[0]], mejorSolucionActual[par[1]]);
 				movimientosVecinosEvaluados.put(vecino, String.valueOf(par[0])+"-"+String.valueOf(par[1]));
 				costosVecinosEvaluados.put(vecino, QAP.calculoCosto(vecino));
 			}
@@ -174,7 +173,7 @@ public class BusquedaTabu {
 										// El mas repetido de la posicion n, su indice, y el menos repetido
 										int indiceElite = Collections.max(memoriaMedianoPlazo.get(conta).entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
 										int indicePobre = Collections.min(memoriaMedianoPlazo.get(conta).entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
-										// Swap!
+										// Swap del indice pobre al elite
 										Collections.swap(copiaSolucionActual, copiaSolucionActual.indexOf(indiceElite), copiaSolucionActual.indexOf(indicePobre));
 									}			
 									// Entreguemos el resultado ofuscado
@@ -261,7 +260,7 @@ public class BusquedaTabu {
 									// El mas repetido de la posicion n, su indice, y el menos
 									int indiceElite = Collections.max(memoriaMedianoPlazo.get(conta).entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
 									int indicePobre = Collections.min(memoriaMedianoPlazo.get(conta).entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
-									// Swap!
+									// Swap del indice pobre al indice elite
 									Collections.swap(copiaSolucionActual, copiaSolucionActual.indexOf(indiceElite), copiaSolucionActual.indexOf(indicePobre));
 								}			
 								// Entreguemos el resultado ofuscado
