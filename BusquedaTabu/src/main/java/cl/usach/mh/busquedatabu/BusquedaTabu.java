@@ -3,7 +3,6 @@ package cl.usach.mh.busquedatabu;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -12,7 +11,6 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
-import org.apache.commons.numbers.combinatorics.Combinations;
 
 import cl.usach.mh.comunes.qap.QAP;
 import cl.usach.mh.comunes.utilidades.representacionordinal.Operaciones;
@@ -23,6 +21,14 @@ public class BusquedaTabu {
 	public static int[] mejorSolucionActual;
 	public static ArrayList<int[]> solucionesEncontradas = new ArrayList<int[]>();
 	public static ArrayList<int[]> mejoresSolucionesHistoricas = new ArrayList<int[]>();
+	
+	private static TreeMap<String, Integer> listaTabu;
+	private static ArrayList<TreeMap<Integer, Integer>> memoriaMedianoPlazo;
+	private static DualHashBidiMap<String, Integer> memoriaLargoPlazo;
+	
+	private static DualHashBidiMap<int[], String> movimientosVecinosEvaluados;
+	private static DualHashBidiMap<int[], Integer> costosVecinosEvaluados;
+	private static List<int[]> mejoresVecinos;
 	
 	public static void ejecucion(int tenorExt, int[] solucionInicialExt, int numeroCiclosExt, boolean intercambiosCompletos, int limiteIntercambios, boolean diversif, int numCicloDiversif, boolean intensif, int numSolSinMej, int porcInt) throws IOException, URISyntaxException {
 		// Busqueda Tabu
@@ -49,20 +55,15 @@ public class BusquedaTabu {
 		mejoresSolucionesHistoricas = new ArrayList<int[]>();
 		
 		// 2) Inicializar Lista Tabu (memoria corto plazo), su tenor (tenure), memoria a mediano y largo plazo, con las estructuras mas adecuadas. 
-		TreeMap<String, Integer> listaTabu = new TreeMap<String, Integer>();
-		ArrayList<TreeMap<Integer, Integer>> memoriaMedianoPlazo = new ArrayList<TreeMap<Integer, Integer>>();
-		for(int c = 0; c < solucionInicial.length; c++) {
-			TreeMap<Integer, Integer> init = new TreeMap<Integer, Integer>();
+		listaTabu = new TreeMap<String, Integer>();
+		memoriaMedianoPlazo = new ArrayList<TreeMap<Integer, Integer>>();
+		TreeMap<Integer, Integer> init;
+		for(int c = 0; c < QAP.getCantidad(); c++) {
+			init = new TreeMap<Integer, Integer>();
 			memoriaMedianoPlazo.add(init);
 		}
-		DualHashBidiMap<String, Integer> memoriaLargoPlazo = new DualHashBidiMap<String, Integer>();		
-		
-		// 3) Generar todos los pares combinatorios, no repetidos, del universo. 
-		ArrayList<int[]> parTemp = new ArrayList<int[]>(); 
-		(new Combinations(solucionInicial.length,2)).iterator().forEachRemaining(parTemp::add);
-		int [][] pares = parTemp.stream().toArray(int[][]::new);
-		for(int i = 0; i < pares.length; i++) for(int j = 0; j < pares[i].length;j++) pares[i][j]++; 
-		parTemp = null;
+		init = null;
+		memoriaLargoPlazo = new DualHashBidiMap<String, Integer>();		
         
 		// 4) La solucion inicial es la mejor Solucion historica y actual al comenzar. Es la unica que conocemos.
 		mejorSolucionHistorica = solucionInicial;
@@ -73,16 +74,16 @@ public class BusquedaTabu {
 			
 			// 5) Por cada combinacion aplico un intercambio (swap) y almaceno sus evaluaciones y par de intercambio (swap) asociado en un mapa
 			// Nota: Se hace el intercambio en una copia. No tocamos solucion actual
-			DualHashBidiMap<int[], String> movimientosVecinosEvaluados = new DualHashBidiMap<int[], String>();
-			DualHashBidiMap<int[], Integer> costosVecinosEvaluados = new DualHashBidiMap<int[], Integer>();
-			for(int[] par : pares) {
+			movimientosVecinosEvaluados = new DualHashBidiMap<int[], String>();
+			costosVecinosEvaluados = new DualHashBidiMap<int[], Integer>();
+			for(int[] par : QAP.paresUnicosSolucion) {
 				// 5a) Hago el intercambio (swap)
-				int[] vecino = Operaciones.intercambio(mejorSolucionActual, mejorSolucionActual[par[0]], mejorSolucionActual[par[1]]);
+				int[] vecino = Operaciones.intercambio(mejorSolucionActual, par[0], par[1]);
 				movimientosVecinosEvaluados.put(vecino, String.valueOf(par[0])+"-"+String.valueOf(par[1]));
 				costosVecinosEvaluados.put(vecino, QAP.calculoCosto(vecino));
 			}
 			// 6) Ordenemos los vecinos por costo ascendente, dado que estamos buscando los menores
-			List<int[]> mejoresVecinos = costosVecinosEvaluados.entrySet().stream().sorted(Map.Entry.comparingByValue()).map(Map.Entry::getKey).collect(Collectors.toList());
+			mejoresVecinos = costosVecinosEvaluados.entrySet().stream().sorted(Map.Entry.comparingByValue()).map(Map.Entry::getKey).collect(Collectors.toList());
 			
 			// Si vamos a recorrer todos los mejores vecinos, sera el tamanio completo de este arreglo, segun el parametro
 			if(intercambiosCompletosFlag) {
@@ -94,11 +95,7 @@ public class BusquedaTabu {
 				
 				if(diversifico) {
 					// Guardo en mi memoria de largo plazo el movimiento a procesar
-					if(!memoriaLargoPlazo.containsKey(movimientosVecinosEvaluados.get(mejoresVecinos.get(i)))) {
-						memoriaLargoPlazo.put(movimientosVecinosEvaluados.get(mejoresVecinos.get(i)), 1);
-					} else {
-						memoriaLargoPlazo.put(movimientosVecinosEvaluados.get(mejoresVecinos.get(i)), memoriaLargoPlazo.get(movimientosVecinosEvaluados.get(mejoresVecinos.get(i))) + 1);
-					}				
+					actualizarDatosMemoriaLargoPlazo(mejoresVecinos.get(i));
 				}
 				
 				// Sera que se genero con un movimiento Prohibido?
@@ -111,72 +108,15 @@ public class BusquedaTabu {
 						// Bingo! Tenemos una mejor solucion actual e historica.										
 						
 						if(diversifico && (numeroIteracion % numeroCicloDiversificar == 0)) { // Stop! Debo penalizar la solucion (Diversificacion)
-							// Obtengo la suma total de la frecuencia de los movimientos contados
-							int totalFrec = memoriaLargoPlazo.values().stream().mapToInt(Number::intValue).sum();
-							// Obtengo el valor de la memoria de las frecuencias del movimiento
-							int fracMovimiento = memoriaLargoPlazo.get(movimientosVecinosEvaluados.get(mejoresVecinos.get(i)));
-							// Obtengo porcentaje de penalizacion
-							double porcPenalizacion = fracMovimiento / totalFrec;
-							// Se lo aplico al costo actual
-							int costoPenalizado = (int) Math.round((costosVecinosEvaluados.get((mejoresVecinos.get(i)))*porcPenalizacion) + costosVecinosEvaluados.get(mejoresVecinos.get(i)));
-							
-							// Sacaremos un costo nuevo al azar, para penalizar
-							int[] costoNuevo = Operaciones.solucionAlAzar(solucionInicial.length+1);
-							
-							// Vamos por esa penalizacion
-							while(QAP.calculoCosto(costoNuevo) < costoPenalizado) {
-								costoNuevo = Operaciones.solucionAlAzar(solucionInicial.length+1);
-							}
 							// Penalizado.
-							mejoresVecinos.set(i, costoNuevo);
+							mejoresVecinos.set(i, diversificar(mejoresVecinos.get(i)));
 						}
 						
 						mejorSolucionActual = mejoresVecinos.get(i);
 						mejorSolucionHistorica = mejoresVecinos.get(i);
 											
 						if(intensifico) { // Debo intensificar?
-							// Memoria de mediano plazo, para intensificar
-							// Recorro cada elemento de la solucion (Indice del ArrayList) y aumento por cada elemento del universo (HashMap)
-							for (int ii = 1; ii <= solucionInicial.length; ii++) {
-								for(int iii = 0; iii < mejorSolucionActual.length; iii++) {
-									if(ii == mejorSolucionActual[iii]) {
-										if(memoriaMedianoPlazo.get(iii).containsKey(ii)) {
-											memoriaMedianoPlazo.get(iii).put(ii, memoriaMedianoPlazo.get(iii).get(ii) + 1);
-										} else {
-											memoriaMedianoPlazo.get(iii).put(ii, 1);
-										}
-									}								
-								}
-							}
-							
-							if(mejoresSolucionesHistoricas.size()>0) {
-								
-								double promedio = 0.0;
-								double acumulado = 0.0;
-								int alg = 1;
-								for(int ite = solucionesSinMejorar; ite < solucionesEncontradas.size(); ite++) { // Tomemos las ultimas soluciones iteradas
-									acumulado += QAP.calculoCosto(solucionesEncontradas.get(ite));
-									if((ite + 1) == solucionesEncontradas.size()) { // Ultimo. Promedio.
-										promedio = ((double) acumulado) / ((double)(alg));								
-									}
-									alg++;
-								}
-								int costoTemp = QAP.calculoCosto(mejoresSolucionesHistoricas.get((mejoresSolucionesHistoricas.size()-1)));
-								// Es poca la diferencia del promedio de los ultimos con el ultimo historico? Si es asi, intensifico.
-								if(promedio < ((double)costoTemp*((double)porcentajeIntensificacion/100.0)) + (double)costoTemp && promedio > 0) {
-									// Necesito los que mas se repitan, y los que menos. Los intercambio y declaro dicha solucion como nueva solucion actual.
-									List<Integer> copiaSolucionActual = Arrays.stream(mejorSolucionActual).boxed().collect(Collectors.toList());
-									for(int conta = 0; conta < memoriaMedianoPlazo.size()/2; conta++) {
-										// El mas repetido de la posicion n, su indice, y el menos repetido
-										int indiceElite = Collections.max(memoriaMedianoPlazo.get(conta).entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
-										int indicePobre = Collections.min(memoriaMedianoPlazo.get(conta).entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
-										// Swap del indice pobre al elite
-										Collections.swap(copiaSolucionActual, copiaSolucionActual.indexOf(indiceElite), copiaSolucionActual.indexOf(indicePobre));
-									}			
-									// Entreguemos el resultado ofuscado
-									mejorSolucionActual = copiaSolucionActual.stream().mapToInt(Integer::valueOf).toArray();;
-								}
-							}
+							mejorSolucionActual = intensificar(solucionesSinMejorar, porcentajeIntensificacion);
 						}
 						
 						solucionesEncontradas.add(mejorSolucionActual);
@@ -192,24 +132,7 @@ public class BusquedaTabu {
 					listaTabu.put(movimientosVecinosEvaluados.get(mejoresVecinos.get(i)), tenor);
 					
 					if(diversifico && (numeroIteracion % numeroCicloDiversificar == 0)) { // Stop! Debo penalizar la solucion (Diversificacion)
-						// Obtengo la suma total de la frecuencia de los movimientos contados
-						float totalFrec = memoriaLargoPlazo.values().stream().mapToInt(Number::intValue).sum();
-						// Obtengo el valor de la memoria de las frecuencias del movimiento
-						float fracMovimiento = memoriaLargoPlazo.get(movimientosVecinosEvaluados.get(mejoresVecinos.get(i)));
-						// Obtengo porcentaje de penalizacion
-						float porcPenalizacion = (fracMovimiento / totalFrec);
-						// Se lo aplico al costo actual
-						int costoPenalizado = (int) Math.round((costosVecinosEvaluados.get((mejoresVecinos.get(i)))*porcPenalizacion) + costosVecinosEvaluados.get(mejoresVecinos.get(i)));
-						
-						// Sacaremos un costo nuevo que sea peor, para penalizar
-						int[] costoNuevo = Operaciones.solucionAlAzar(solucionInicial.length+1);
-						
-						// Vamos por esa penalizacion
-						while(QAP.calculoCosto(costoNuevo) < costoPenalizado) {
-							costoNuevo = Operaciones.solucionAlAzar(solucionInicial.length+1);
-						}
-						// Penalizado.
-						mejoresVecinos.set(i, costoNuevo);
+						mejoresVecinos.set(i, diversificar(mejoresVecinos.get(i)));
 					}
 					
 					mejorSolucionActual = mejoresVecinos.get(i); // Es la mejor solucion actual.
@@ -220,48 +143,7 @@ public class BusquedaTabu {
 					}
 					
 					if(intensifico) { // Debo intensificar?
-						// Memoria de mediano plazo, para intensificar
-						// Recorro cada elemento de la solucion (Indice del ArrayList) y aumento por cada elemento del universo (HashMap)
-						for (int ii = 1; ii <= solucionInicial.length; ii++) {
-							for(int iii = 0; iii < mejorSolucionActual.length; iii++) {
-								if(ii == mejorSolucionActual[iii]) {
-									if(memoriaMedianoPlazo.get(iii).containsKey(ii)) {
-										memoriaMedianoPlazo.get(iii).put(ii, memoriaMedianoPlazo.get(iii).get(ii) + 1);
-									} else {
-										memoriaMedianoPlazo.get(iii).put(ii, 1);
-									}
-								}								
-							}
-						}
-						
-						if(mejoresSolucionesHistoricas.size()>0) {
-							
-							double promedio = 0.0;
-							double acumulado = 0.0;
-							int alg = 1;
-							for(int ite = solucionesSinMejorar; ite < solucionesEncontradas.size(); ite++) { // Tomemos las ultimas soluciones iteradas
-								acumulado += QAP.calculoCosto(solucionesEncontradas.get(ite));
-								if((ite + 1) == solucionesEncontradas.size()) { // Ultimo. Promedio.
-									promedio = ((double) acumulado) / ((double)(alg));								
-								}
-								alg++;
-							}
-							int costoTemp = QAP.calculoCosto(mejoresSolucionesHistoricas.get((mejoresSolucionesHistoricas.size()-1)));
-							// Es poca la diferencia del promedio de los ultimos con el ultimo historico? Si es asi, intensifico.
-							if(promedio < ((double)costoTemp*((double)porcentajeIntensificacion/100.0)) + (double)costoTemp && promedio > 0) {
-								// Necesito los que mas se repitan, y los que menos. Los intercambio y declaro dicha solucion como nueva solucion actual.
-								List<Integer> copiaSolucionActual = Arrays.stream(mejorSolucionActual).boxed().collect(Collectors.toList());
-								for(int conta = 0; conta < memoriaMedianoPlazo.size()/2; conta++) {
-									// El mas repetido de la posicion n, su indice, y el menos
-									int indiceElite = Collections.max(memoriaMedianoPlazo.get(conta).entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
-									int indicePobre = Collections.min(memoriaMedianoPlazo.get(conta).entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
-									// Swap del indice pobre al indice elite
-									Collections.swap(copiaSolucionActual, copiaSolucionActual.indexOf(indiceElite), copiaSolucionActual.indexOf(indicePobre));
-								}			
-								// Entreguemos el resultado ofuscado
-								mejorSolucionActual = copiaSolucionActual.stream().mapToInt(Integer::valueOf).toArray();;
-							}
-						}
+						mejorSolucionActual = intensificar(solucionesSinMejorar, porcentajeIntensificacion);
 					}
 					
 					solucionesEncontradas.add(mejorSolucionActual);
@@ -277,4 +159,77 @@ public class BusquedaTabu {
 			listaTabu.entrySet().removeIf(entry -> entry.getValue().equals(0));			
 		}
 	}
+	
+	private static int[] diversificar(int[] solucion) {
+		// Obtengo la suma total de la frecuencia de los movimientos contados
+		int totalFrec = memoriaLargoPlazo.values().stream().mapToInt(Number::intValue).sum();
+		// Obtengo el valor de la memoria de las frecuencias del movimiento
+		int fracMovimiento = memoriaLargoPlazo.get(movimientosVecinosEvaluados.get(solucion));
+		// Obtengo porcentaje de penalizacion
+		double porcPenalizacion = fracMovimiento / totalFrec;
+		// Se lo aplico al costo actual
+		int costoPenalizado = (int) Math.round((costosVecinosEvaluados.get((solucion))*porcPenalizacion) + costosVecinosEvaluados.get(solucion));
+		
+		// Sacaremos una solucion nueva al azar, para penalizar
+		int[] solucionNueva = Operaciones.solucionAlAzar(QAP.getCantidad());
+		
+		// Vamos por esa penalizacion
+		while(QAP.calculoCosto(solucionNueva) < costoPenalizado) {
+			solucionNueva = Operaciones.solucionAlAzar(QAP.getCantidad());
+		}
+		return solucionNueva;		
+	}
+	
+	private static void actualizarDatosMemoriaLargoPlazo(int[] solucion) {
+		if(!memoriaLargoPlazo.containsKey(movimientosVecinosEvaluados.get(solucion))) {
+			memoriaLargoPlazo.put(movimientosVecinosEvaluados.get(solucion), 1);
+		} else {
+			memoriaLargoPlazo.put(movimientosVecinosEvaluados.get(solucion), memoriaLargoPlazo.get(movimientosVecinosEvaluados.get(solucion)) + 1);
+		}		
+	}
+	
+	private static int[] intensificar(int solucionesSinMejorar, int porcentajeIntensificacion) {
+		int[] solucionIntensificada = mejorSolucionActual;
+		// Memoria de mediano plazo, para intensificar
+		// Recorro cada elemento de la solucion (Indice del ArrayList) y aumento por cada elemento del universo (HashMap)
+		for (int ii = 1; ii <= QAP.getCantidad(); ii++) {
+			for(int iii = 0; iii < mejorSolucionActual.length; iii++) {
+				if(ii == mejorSolucionActual[iii]) {
+					if(memoriaMedianoPlazo.get(iii).containsKey(ii)) {
+						memoriaMedianoPlazo.get(iii).put(ii, memoriaMedianoPlazo.get(iii).get(ii) + 1);
+					} else {
+						memoriaMedianoPlazo.get(iii).put(ii, 1);
+					}
+				}								
+			}
+		}
+		
+		if(mejoresSolucionesHistoricas.size()>0) {
+			
+			double promedio = 0.0;
+			double acumulado = 0.0;
+			int alg = 1;
+			for(int ite = solucionesSinMejorar; ite < solucionesEncontradas.size(); ite++) { // Tomemos las ultimas soluciones iteradas
+				acumulado += QAP.calculoCosto(solucionesEncontradas.get(ite));
+				if((ite + 1) == solucionesEncontradas.size()) { // Ultimo. Promedio.
+					promedio = ((double) acumulado) / ((double)(alg));								
+				}
+				alg++;
+			}
+			int costoTemp = QAP.calculoCosto(mejoresSolucionesHistoricas.get((mejoresSolucionesHistoricas.size()-1)));
+			// Es poca la diferencia del promedio de los ultimos con el ultimo historico? Si es asi, intensifico.
+			if(promedio < ((double)costoTemp*((double)porcentajeIntensificacion/100.0)) + (double)costoTemp && promedio > 0) {
+				// Necesito los que mas se repitan, y los que menos. Los intercambio y declaro dicha solucion como nueva solucion actual.
+				for(int conta = 0; conta < memoriaMedianoPlazo.size()/2; conta++) {
+					// El mas y menos repetido de la posicion n
+					int elementoElite = Collections.max(memoriaMedianoPlazo.get(conta).entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
+					int elementoPobre = Collections.min(memoriaMedianoPlazo.get(conta).entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
+					// Swap del indice pobre al indice elite
+					solucionIntensificada = Operaciones.intercambio(mejorSolucionActual, elementoElite, elementoPobre);
+				}
+			}
+		}
+		return solucionIntensificada;
+	}
+	
 }
