@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.numbers.combinatorics.Combinations;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
 import org.jfree.chart.JFreeChart;
@@ -28,6 +29,8 @@ public class QAP {
 	private static ArrayList<Localidad> localidades = new ArrayList<Localidad>();
 	
 	private static int cantidad = 0;
+	
+	public static int [][] paresUnicosSolucion;
 	
 	public static int calculoCosto(int[] solucionInicial) {				
         int costo = 0;
@@ -127,6 +130,13 @@ public class QAP {
 			localidad.distancias = distancias.get(i - 1).stream().mapToInt(Integer::valueOf).toArray();
 			QAP.getLocalidades().add(localidad);
 		}
+		
+		// 3) Guardemos los pares unicos del rango, para uso combinatorio en las aplicaciones
+		ArrayList<int[]> parTemp = new ArrayList<int[]>(); 
+		(new Combinations(QAP.getCantidad(),2)).iterator().forEachRemaining(parTemp::add);		
+		paresUnicosSolucion = parTemp.stream().map(item-> Arrays.stream(item).map(i -> i + 1).toArray()).toArray(int[][]::new);
+		parTemp = null;
+		
 	}
 	
 	public static void grafico(String titulo, String linea1, String linea2, ArrayList<int[]> todos, ArrayList<int[]> mejores) {

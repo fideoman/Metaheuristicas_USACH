@@ -9,9 +9,9 @@ import java.util.stream.IntStream;
 
 public class Operaciones {
 
-	public static int[] intercambio(int[] entrada, int indice1, int indice2) {
+	public static int[] intercambio(int[] entrada, int local1, int local2) {
 		List<Integer> copiaSolucionActual = Arrays.stream(entrada).boxed().collect(Collectors.toList());
-		Collections.swap(copiaSolucionActual, copiaSolucionActual.indexOf(indice1), copiaSolucionActual.indexOf(indice2));
+		Collections.swap(copiaSolucionActual, copiaSolucionActual.indexOf(local1), copiaSolucionActual.indexOf(local2));
 		return copiaSolucionActual.stream().mapToInt(Integer::valueOf).toArray();
 	}
 	
