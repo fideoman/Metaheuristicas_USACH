@@ -13,7 +13,7 @@ public class BusquedaTabuEjecutable {
 		
 		//cargarDatosQAP("nug12.qap");
 		//cargarDatosQAP("chr25a.qap");
-		QAP.cargarDatosQAP("esc32a.qap");
+		QAP.cargarDatosQAP("qap/esc32a.qap");
 		//cargarDatosQAP("esc64a.qap");
 		//cargarDatosQAP("esc128.qap");		
 		
