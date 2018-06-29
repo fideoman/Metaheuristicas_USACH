@@ -1,9 +1,11 @@
 package cl.usach.mh.comunes.utilidades.representacionordinal;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Operaciones {
 
@@ -19,4 +21,9 @@ public class Operaciones {
 		return alAzar.stream().mapToInt(Integer::valueOf).toArray();
 	}
 	
+	public static int[] solucionAlAzar(int largoSolucion) {
+		List<Integer> alAzar = IntStream.range(1, largoSolucion+1).boxed().collect(Collectors.toCollection(ArrayList::new));
+		Collections.shuffle(alAzar);
+		return alAzar.stream().mapToInt(Integer::valueOf).toArray();
+	}	
 }
