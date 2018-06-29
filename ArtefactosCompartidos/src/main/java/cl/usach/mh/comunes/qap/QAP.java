@@ -29,11 +29,6 @@ public class QAP {
 	
 	private static int cantidad = 0;
 	
-	public QAP(ArrayList<Local> locales, ArrayList<Localidad> localidades) {
-		QAP.locales = locales;
-		QAP.localidades = localidades;		
-	}
-	
 	public static int calculoCosto(int[] solucionInicial) {				
         int costo = 0;
 		for (int i = 0; i < solucionInicial.length; i++) {
