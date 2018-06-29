@@ -12,6 +12,7 @@ import com.rits.cloning.Cloner;
 import cl.usach.mh.algoritmogenetico.AlgoritmoGenetico;
 import cl.usach.mh.algoritmogenetico.Individuo;
 import cl.usach.mh.algoritmogenetico.poblacion.Fitness;
+import cl.usach.mh.comunes.qap.QAP;
 
 /**
  * Clase para realizar el cruce de dos genotipos.
@@ -23,7 +24,7 @@ public class Cruce {
 	/**
 	 * Cruce de dos individuos, utilizando el cruce en un punto. Se dividen los dos
 	 * padres a partir de ese punto de cruce (que se obtiene aleatoriamente) y se
-	 * mezclan las dos partes de los padres. Puede que la soluci�n obtenida no sea
+	 * mezclan las dos partes de los padres. Puede que la solucion obtenida no sea
 	 * correcta por lo que hay que arreglarla para que no se repitan las fabricas /
 	 * locales.
 	 *
@@ -47,7 +48,7 @@ public class Cruce {
 			int[] parUnico = AlgoritmoGenetico.todasCombinacionesUnicas
 					.get((new Random()).nextInt(AlgoritmoGenetico.todasCombinacionesUnicas.size()));
 
-			// Genero dos n�meros distintos dentro del rango del n�mero de poblaciones, al
+			// Genero dos numeros distintos dentro del rango del numero de poblaciones, al
 			// azar
 			int c1 = parUnico[0];
 			int c2 = parUnico[1];			
@@ -60,7 +61,7 @@ public class Cruce {
 			ArrayList<Integer> genotipoHijoArray = (ArrayList<Integer>) Arrays.stream((new Cloner()).deepClone(padre1.getGenotipo())).boxed().collect(Collectors.toList());
 
 			// Obtengo el punto de cruce, al azar
-			int pos = (new Random()).nextInt(((AlgoritmoGenetico.largoGenotipo - 2) - 1) + 1) + 1;
+			int pos = (new Random()).nextInt(((QAP.getCantidad() - 2) - 1) + 1) + 1;
 
 			for (int i = pos; i <= genotipoHijoArray.size(); i++) {
 				for(int j = 0; j < genotipoPadre2.length; j++) {
@@ -73,8 +74,8 @@ public class Cruce {
 			
 			Individuo hijo = new Individuo(genotipoHijoArray.stream().mapToInt(Integer::valueOf).toArray());
 
-			// Calculamos el fitness del nuevo genotipo, seg�n el m�todo pasado por
-			// par�metro
+			// Calculamos el fitness del nuevo genotipo, segn el mtodo pasado por
+			// parmetro
 
 			if (!esHibrido) {
 				Fitness.calculoFitness(hijo);
@@ -82,7 +83,7 @@ public class Cruce {
 				Fitness.calculoFitnessHibrido(hijo, tenor, numeroCiclosTotales, limiteIntercambios);
 			}
 
-			// A�adimos los dos nuevos individuos a la poblacion
+			// Aadimos los dos nuevos individuos a la poblacion
 			nueva_poblacion.add(hijo);
 		}
 		return nueva_poblacion;

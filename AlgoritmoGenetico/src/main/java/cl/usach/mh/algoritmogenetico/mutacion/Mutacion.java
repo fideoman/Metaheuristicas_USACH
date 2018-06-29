@@ -5,9 +5,9 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Random;
 
-import cl.usach.mh.algoritmogenetico.AlgoritmoGenetico;
 import cl.usach.mh.algoritmogenetico.Individuo;
 import cl.usach.mh.algoritmogenetico.poblacion.Fitness;
+import cl.usach.mh.comunes.qap.QAP;
 
 /**
  * Clase para realizar la mutacion de la poblacion.
@@ -21,7 +21,7 @@ public class Mutacion {
 	 * por otra. Ambas posiciones son elegidas aleatoriamente.
 	 *
 	 * @param ind individuo a mutar
-	 * @param cantidad tama�o del genotipo (o solucion)
+	 * @param cantidad tamao del genotipo (o solucion)
 	 * @return el individuo mutado
 	 */
 	public static Individuo mutacion(Individuo ind, int cantidad){
@@ -48,7 +48,7 @@ public class Mutacion {
 	 * @param poblacion la poblacion actual
 	 * @param distancias las distancias entre fabricas
 	 * @param pesos los pesos entre las fabricas
-	 * @param cantidad el tama�o de la solucion
+	 * @param cantidad el tamao de la solucion
 	 * @return la nueva poblacion mutada
 	 * @throws URISyntaxException 
 	 * @throws IOException 
@@ -59,7 +59,7 @@ public class Mutacion {
 		for(int i=0; i<poblacion.size(); i++){
 			Individuo aux = new Individuo();
 			
-			aux = mutacion(poblacion.get(i), AlgoritmoGenetico.largoGenotipo);
+			aux = mutacion(poblacion.get(i), QAP.getCantidad());
 			
 			//Calculamos el fitness del nuevo genotipo
 			if(!esHibrido) {
@@ -68,7 +68,7 @@ public class Mutacion {
 				Fitness.calculoFitnessHibrido(aux, tenor, numeroCiclosTotales, limiteIntercambios);
 			}
 			
-			//A�adimos el nuevo individuo a la poblacion
+			//Aadimos el nuevo individuo a la poblacion
 			nueva_poblacion.add(aux);
 		}
 		

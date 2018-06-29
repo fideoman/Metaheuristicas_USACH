@@ -3,9 +3,9 @@ package cl.usach.mh.algoritmogenetico.poblacion;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import cl.usach.mh.algoritmogenetico.AlgoritmoGenetico;
 import cl.usach.mh.algoritmogenetico.Individuo;
 import cl.usach.mh.busquedatabu.BusquedaTabu;
+import cl.usach.mh.comunes.qap.QAP;
 
 /**
  * Clase para obtener el fitness de un genotipo (o solucion).
@@ -22,31 +22,13 @@ public class Fitness {
 	 * @param pesos los pesos entre las fabricas
 	 */
 	public static void calculoFitness(Individuo i1){
-		// i1.getGenotipo() es la soluci�n propuesta de entrada
+		// i1.getGenotipo() es la solucin propuesta de entrada
 		// li.fitness es la salida esperada (costo)
 		
 		int[] solucionInicial = i1.getGenotipo();
-		
-        int costo = 0;
-		for (int i = 0; i < solucionInicial.length; i++) {
-			for (int j = 0; j < AlgoritmoGenetico.locales.size(); j++) {
-				if (String.valueOf(solucionInicial[i]).equals(AlgoritmoGenetico.locales.get(j).etiqueta)) {
-					int m = 0;
-					for (int l = 0; l < solucionInicial.length; l++) {
-						for (int o = 0; o < AlgoritmoGenetico.locales.get(j).conjuntoComplemento.length; o++) {
-							if (solucionInicial[l] == AlgoritmoGenetico.locales.get(j).conjuntoComplemento[o]) {
-								costo = costo
-										+ AlgoritmoGenetico.locales.get(j).flujos[o]
-										* AlgoritmoGenetico.localidades.get(i).distancias[m];
-								m++;
-							}
-						}
-					}
-				}
-			}
-		}	
+
 		// 4) Costo calculado.
-		i1.setFitness(costo);
+		i1.setFitness(QAP.calculoCosto(solucionInicial));
 	}
 	
 	/**
@@ -60,7 +42,7 @@ public class Fitness {
 	 * @throws IOException 
 	 */
 	public static void calculoFitnessHibrido(Individuo i1, int tenor, int numeroCiclosTotales, int limiteIntercambios) throws IOException, URISyntaxException{
-		BusquedaTabu.ejecucion(AlgoritmoGenetico.locales, AlgoritmoGenetico.localidades, tenor, i1.getGenotipo(), numeroCiclosTotales, false, limiteIntercambios, false, 50, false, 10, 10);
+		BusquedaTabu.ejecucion(tenor, i1.getGenotipo(), numeroCiclosTotales, false, limiteIntercambios, false, 50, false, 10, 10);
 		i1.setGenotipo(BusquedaTabu.mejorSolucionHistorica);
 		calculoFitness(i1);
 	}	

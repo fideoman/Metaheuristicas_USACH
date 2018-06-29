@@ -45,7 +45,7 @@ public class Individuo {
 	/**
 	 * Contruye un individuo inicial generado aleatoriamente.
 	 *
-	 * @param size tama�o del genotipo (num. de fabricas)
+	 * @param size tamao del genotipo (num. de fabricas)
 	 */
 	public Individuo(int largo){
 		fitness = 0;
