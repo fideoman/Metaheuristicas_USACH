@@ -1,8 +1,9 @@
-package cl.usach.mh.busquedatabu;
+package cl.usach.mh.ejecutables;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import cl.usach.mh.busquedatabu.BusquedaTabu;
 import cl.usach.mh.comunes.qap.QAP;
 
 public class BusquedaTabuEjecutable {
