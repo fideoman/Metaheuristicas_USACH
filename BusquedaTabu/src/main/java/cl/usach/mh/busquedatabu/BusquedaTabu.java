@@ -168,7 +168,7 @@ public class BusquedaTabu {
 		// Obtengo porcentaje de penalizacion
 		double porcPenalizacion = (double) fracMovimiento / (double) totalFrec;
 		// Se lo aplico al costo actual
-		int costoPenalizado = (int) Math.round((costosVecinosEvaluados.get((solucion))*porcPenalizacion) + costosVecinosEvaluados.get(solucion));
+		int costoPenalizado = (int) Math.round(((double)(costosVecinosEvaluados.get(solucion)))*porcPenalizacion + ((double)costosVecinosEvaluados.get(solucion)));
 		
 		// Sacaremos una solucion nueva al azar, para penalizar
 		int[] solucionNueva = Operaciones.solucionAlAzar(QAP.getCantidad());
@@ -210,7 +210,7 @@ public class BusquedaTabu {
 			double acumulado = 0.0;
 			int alg = 1;
 			for(int ite = solucionesSinMejorar; ite < solucionesEncontradas.size(); ite++) { // Tomemos las ultimas soluciones iteradas
-				acumulado += QAP.calculoCosto(solucionesEncontradas.get(ite));
+				acumulado += (double) QAP.calculoCosto(solucionesEncontradas.get(ite));
 				if((ite + 1) == solucionesEncontradas.size()) { // Ultimo. Promedio.
 					promedio = ((double) acumulado) / ((double)(alg));								
 				}
