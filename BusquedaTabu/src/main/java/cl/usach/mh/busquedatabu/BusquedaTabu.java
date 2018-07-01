@@ -166,7 +166,7 @@ public class BusquedaTabu {
 		// Obtengo el valor de la memoria de las frecuencias del movimiento
 		int fracMovimiento = memoriaLargoPlazo.get(movimientosVecinosEvaluados.get(solucion));
 		// Obtengo porcentaje de penalizacion
-		double porcPenalizacion = fracMovimiento / totalFrec;
+		double porcPenalizacion = (double) fracMovimiento / (double) totalFrec;
 		// Se lo aplico al costo actual
 		int costoPenalizado = (int) Math.round((costosVecinosEvaluados.get((solucion))*porcPenalizacion) + costosVecinosEvaluados.get(solucion));
 		
