@@ -13,12 +13,6 @@ import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.numbers.combinatorics.Combinations;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartFrame;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 
 import cl.usach.mh.comunes.qap.objetos.Local;
 import cl.usach.mh.comunes.qap.objetos.Localidad;	
@@ -138,27 +132,6 @@ public class QAP {
 		parTemp = null;
 		
 	}
-	
-	public static void grafico(String titulo, String linea1, String linea2, ArrayList<int[]> todos, ArrayList<int[]> mejores) {
-		final XYSeries serie1 = new XYSeries(linea1);
-		final XYSeries serie2 = new XYSeries(linea2);
-		for(int i=0;i<todos.size();i++) {
-			serie1.add(i, QAP.calculoCosto(todos.get(i)));
-		}
-		for(int i=0;i<mejores.size();i++) {
-			serie2.add(i, QAP.calculoCosto(mejores.get(i)));
-		}
-		final XYSeriesCollection datos = new XYSeriesCollection();
-		datos.addSeries(serie1);
-		datos.addSeries(serie2);
-		final JFreeChart chart = ChartFactory.createXYLineChart(titulo, "Iteraciones", "Costos", datos,
-				PlotOrientation.VERTICAL, true, true, false);
-
-		ChartFrame frame = new ChartFrame(titulo,chart);
-		frame.pack();
-		frame.setVisible(true);
-	}
-
 	//
 	
 	public static ArrayList<Local> getLocales() {
