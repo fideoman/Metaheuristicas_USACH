@@ -15,5 +15,8 @@
 	<classpathentry exported="true" kind="lib" path="usr/lib/jfreechart-1.0.15.jar"/>
 	<classpathentry exported="true" kind="lib" path="usr/lib/objenesis-2.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="usr/lib/guava-25.1-jre.jar"/>
+	<classpathentry kind="lib" path="usr/lib/poi-3.17.jar"/>
+	<classpathentry kind="lib" path="usr/lib/poi-ooxml-3.17.jar"/>
+	<classpathentry kind="lib" path="usr/lib/poi-ooxml-schemas-3.17.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
