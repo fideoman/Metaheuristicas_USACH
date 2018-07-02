@@ -40,6 +40,10 @@ public class AlgoritmoGenetico {
 		// 1) Contador de salida de soluciones
 		mejoresSolucionesHistoricas = new ArrayList<int[]>();
 		solucionesEncontradas = new ArrayList<int[]>();
+		costosEncontrados = new ArrayList<Integer>();
+		mejoresCostosEncontrados = new ArrayList<Integer>();
+		solucionesEncontradasTimestamp = new ArrayList<Timestamp>();
+		mejoresSolucionesHistoricasTimestamp = new ArrayList<Timestamp>();
 		
 		// La siguiente lnea genera todos los posibles pares no repetidos del tamao de la poblacin.
 		// Muy til para hacer el azar ms excto. Sólo gasto al comienzo.
