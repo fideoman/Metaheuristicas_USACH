@@ -70,7 +70,7 @@ public class BusquedaTabu {
 		mejorSolucionActual = solucionInicial;
 		
 		for (int numeroIteracion = 1; numeroIteracion <= numeroCiclos; numeroIteracion++) { // Ciclo central
-			//System.out.println("Porcentaje de completitud: " + Math.round((((double) numeroIteracion) / ((double) numeroCiclos))*100) + "%");
+			//System.out.println("Iteracion: " + numeroIteracion);
 			
 			// 5) Por cada combinacion aplico un intercambio (swap) y almaceno sus evaluaciones y par de intercambio (swap) asociado en un mapa
 			// Nota: Se hace el intercambio en una copia. No tocamos solucion actual
@@ -174,8 +174,14 @@ public class BusquedaTabu {
 		int[] solucionNueva = Operaciones.solucionAlAzar(QAP.getCantidad());
 		
 		// Vamos por esa penalizacion
+		int contador = 1;
 		while(QAP.calculoCosto(solucionNueva) < costoPenalizado) {
-			solucionNueva = Operaciones.solucionAlAzar(QAP.getCantidad());
+			solucionNueva = Operaciones.solucionAlAzar(QAP.getCantidad()); // Aseguremos que tomaremos una solucion mas mala que la penalizacion
+			if(contador == 50) { // El costo penalizado es MUY malo. No perderemos mas ciclos: La solucion nueva será la más mala historica.
+				solucionNueva = mejoresSolucionesHistoricas.get(0);
+				break;
+			}
+			contador++;
 		}
 		return solucionNueva;		
 	}
