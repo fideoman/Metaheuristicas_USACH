@@ -22,7 +22,9 @@ public class BusquedaTabu {
 	public static int[] mejorSolucionHistorica;
 	public static int[] mejorSolucionActual;
 	public static ArrayList<int[]> solucionesEncontradas = new ArrayList<int[]>();
+	public static ArrayList<Integer> costosEncontrados = new ArrayList<Integer>();
 	public static ArrayList<int[]> mejoresSolucionesHistoricas = new ArrayList<int[]>();
+	public static ArrayList<Integer> mejoresCostosEncontrados = new ArrayList<Integer>();
 	
 	public static ArrayList<Timestamp> solucionesEncontradasTimestamp = new ArrayList<Timestamp>();
 	public static ArrayList<Timestamp> mejoresSolucionesHistoricasTimestamp = new ArrayList<Timestamp>();
@@ -124,8 +126,11 @@ public class BusquedaTabu {
 							mejorSolucionActual = intensificar(solucionesSinMejorar, porcentajeIntensificacion);
 						}
 						
+						// Registro de soluciones.
 						solucionesEncontradas.add(mejorSolucionActual);
+						costosEncontrados.add(QAP.calculoCosto(mejorSolucionActual));
 						mejoresSolucionesHistoricas.add(mejorSolucionHistorica);
+						mejoresCostosEncontrados.add(QAP.calculoCosto(mejorSolucionHistorica));
 						
 						Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 						
@@ -133,11 +138,16 @@ public class BusquedaTabu {
 						solucionesEncontradasTimestamp.add(timestamp);
 						// En el caso de las mejores soluciones, la pregunta es: Cambio? Si cambio, registro el nuevo Timestamp
 						// Si no, repito el anterior.
-						if(!Arrays.equals(mejoresSolucionesHistoricas.get(mejoresSolucionesHistoricas.size()-1), mejoresSolucionesHistoricas.get(mejoresSolucionesHistoricas.size()-2))) {
-							mejoresSolucionesHistoricasTimestamp.add(timestamp);
+						if(mejoresSolucionesHistoricas.size()>1) {
+							if(!Arrays.equals(mejoresSolucionesHistoricas.get(mejoresSolucionesHistoricas.size()-1), mejoresSolucionesHistoricas.get(mejoresSolucionesHistoricas.size()-2))) {
+								mejoresSolucionesHistoricasTimestamp.add(timestamp);
+							} else {
+								mejoresSolucionesHistoricasTimestamp.add(mejoresSolucionesHistoricasTimestamp.get(mejoresSolucionesHistoricasTimestamp.size()-1));
+							}
 						} else {
-							mejoresSolucionesHistoricasTimestamp.add(mejoresSolucionesHistoricasTimestamp.get(mejoresSolucionesHistoricasTimestamp.size()-1));
+							mejoresSolucionesHistoricasTimestamp.add(timestamp);
 						}
+						// 
 						
 						break; // No necesito mas!
 					}
@@ -153,7 +163,7 @@ public class BusquedaTabu {
 					}
 					
 					mejorSolucionActual = mejoresVecinos.get(i); // Es la mejor solucion actual.
-					// Sera la mejor histrica?
+					// Sera la mejor historica?
 					if(QAP.calculoCosto(mejoresVecinos.get(i)) < QAP.calculoCosto(mejorSolucionHistorica)) {
 						// Si. Enhorabuena.
 						mejorSolucionHistorica = mejoresVecinos.get(i);
@@ -163,8 +173,11 @@ public class BusquedaTabu {
 						mejorSolucionActual = intensificar(solucionesSinMejorar, porcentajeIntensificacion);
 					}
 					
+					// Registro de soluciones.
 					solucionesEncontradas.add(mejorSolucionActual);
-					mejoresSolucionesHistoricas.add(mejorSolucionHistorica);								
+					costosEncontrados.add(QAP.calculoCosto(mejorSolucionActual));
+					mejoresSolucionesHistoricas.add(mejorSolucionHistorica);
+					mejoresCostosEncontrados.add(QAP.calculoCosto(mejorSolucionHistorica));
 					
 					Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 					
@@ -172,11 +185,16 @@ public class BusquedaTabu {
 					solucionesEncontradasTimestamp.add(timestamp);
 					// En el caso de las mejores soluciones, la pregunta es: Cambio? Si cambio, registro el nuevo Timestamp
 					// Si no, repito el anterior.
-					if(!Arrays.equals(mejoresSolucionesHistoricas.get(mejoresSolucionesHistoricas.size()-1), mejoresSolucionesHistoricas.get(mejoresSolucionesHistoricas.size()-2))) {
-						mejoresSolucionesHistoricasTimestamp.add(timestamp);
+					if(mejoresSolucionesHistoricas.size()>1) {
+						if(!Arrays.equals(mejoresSolucionesHistoricas.get(mejoresSolucionesHistoricas.size()-1), mejoresSolucionesHistoricas.get(mejoresSolucionesHistoricas.size()-2))) {
+							mejoresSolucionesHistoricasTimestamp.add(timestamp);
+						} else {
+							mejoresSolucionesHistoricasTimestamp.add(mejoresSolucionesHistoricasTimestamp.get(mejoresSolucionesHistoricasTimestamp.size()-1));
+						}
 					} else {
-						mejoresSolucionesHistoricasTimestamp.add(mejoresSolucionesHistoricasTimestamp.get(mejoresSolucionesHistoricasTimestamp.size()-1));
+						mejoresSolucionesHistoricasTimestamp.add(timestamp);
 					}
+					//
 					
 					break; // Nada mas que hacer.
 				}				
