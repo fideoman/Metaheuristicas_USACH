@@ -2,7 +2,9 @@ package cl.usach.mh.algoritmogenetico;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.numbers.combinatorics.Combinations;
@@ -26,7 +28,12 @@ public class AlgoritmoGenetico {
 	
 	public static int[] mejorSolucionHistorica;
 	public static ArrayList<int[]> mejoresSolucionesHistoricas;
+	public static ArrayList<Integer> mejoresCostosEncontrados = new ArrayList<Integer>();
 	public static ArrayList<int[]> solucionesEncontradas;
+	public static ArrayList<Integer> costosEncontrados = new ArrayList<Integer>();
+	
+	public static ArrayList<Timestamp> solucionesEncontradasTimestamp = new ArrayList<Timestamp>();
+	public static ArrayList<Timestamp> mejoresSolucionesHistoricasTimestamp = new ArrayList<Timestamp>();
 	
 	public static void ejecucion(int[] solucionInicial, int tamanioPoblacion, int numeroPoblaciones, boolean hibrido, int tenor, int numeroCiclosTotales, int limiteIntercambios) throws URISyntaxException, IOException {
 		
@@ -100,10 +107,28 @@ public class AlgoritmoGenetico {
 				mejorSolucionHistorica = min_fitness.getGenotipo();
 			}			
 			solucionesEncontradas.add(min_fitness.getGenotipo());
+			costosEncontrados.add(QAP.calculoCosto(min_fitness.getGenotipo()));
 			if(min_fitness.getFitness()<QAP.calculoCosto(mejorSolucionHistorica)) {
 				mejorSolucionHistorica = min_fitness.getGenotipo();
 			}
 			mejoresSolucionesHistoricas.add(mejorSolucionHistorica);
+			mejoresCostosEncontrados.add(QAP.calculoCosto(mejorSolucionHistorica));
+			
+			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+			
+			// En el caso de las soluciones encontradas, cada Timestamp sera unico.
+			solucionesEncontradasTimestamp.add(timestamp);
+			// En el caso de las mejores soluciones, la pregunta es: Cambio? Si cambio, registro el nuevo Timestamp
+			// Si no, repito el anterior.
+			if(mejoresSolucionesHistoricas.size()>1) {
+				if(!Arrays.equals(mejoresSolucionesHistoricas.get(mejoresSolucionesHistoricas.size()-1), mejoresSolucionesHistoricas.get(mejoresSolucionesHistoricas.size()-2))) {
+					mejoresSolucionesHistoricasTimestamp.add(timestamp);
+				} else {
+					mejoresSolucionesHistoricasTimestamp.add(mejoresSolucionesHistoricasTimestamp.get(mejoresSolucionesHistoricasTimestamp.size()-1));
+				}
+			} else {
+				mejoresSolucionesHistoricasTimestamp.add(timestamp);
+			}			
 			//
 			
 			System.out.println("Población procesada #: " + (j + 1) + ". Total: " + numeroPoblaciones);
