@@ -1,5 +1,6 @@
 package cl.usach.mh.templamientosimulado;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -10,7 +11,12 @@ public class TemplamientoSimulado {
 	public static int[] mejorSolucionHistorica;
 	public static int[] mejorSolucionActual;
 	public static ArrayList<int[]> solucionesEncontradas = new ArrayList<int[]>();
+	public static ArrayList<Integer> costosEncontrados = new ArrayList<Integer>();
 	public static ArrayList<int[]> mejoresSolucionesHistoricas = new ArrayList<int[]>();
+	public static ArrayList<Integer> mejoresCostosEncontrados = new ArrayList<Integer>();
+	
+	public static ArrayList<Timestamp> solucionesEncontradasTimestamp = new ArrayList<Timestamp>();
+	public static ArrayList<Timestamp> mejoresSolucionesHistoricasTimestamp = new ArrayList<Timestamp>();
 		
 	public static void ejecucion(double temperaturaInicial, int porcentajeTasaDescenso, int[] solucionInicialExt, int numeroCiclosExt) {
 		
@@ -52,9 +58,29 @@ public class TemplamientoSimulado {
 			if (QAP.calculoCosto(mejorSolucionActual) < QAP.calculoCosto(mejorSolucionHistorica)) {
 				mejorSolucionHistorica = mejorSolucionActual;
 			}
-			// Almacenamos todas las soluciones
+			
+			// Registro de soluciones.
 			solucionesEncontradas.add(mejorSolucionActual);
+			costosEncontrados.add(QAP.calculoCosto(mejorSolucionActual));
 			mejoresSolucionesHistoricas.add(mejorSolucionHistorica);
+			mejoresCostosEncontrados.add(QAP.calculoCosto(mejorSolucionHistorica));
+			
+			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+			
+			// En el caso de las soluciones encontradas, cada Timestamp sera unico.
+			solucionesEncontradasTimestamp.add(timestamp);
+			// En el caso de las mejores soluciones, la pregunta es: Cambio? Si cambio, registro el nuevo Timestamp
+			// Si no, repito el anterior.
+			if(mejoresSolucionesHistoricas.size()>1) {
+				if(!Arrays.equals(mejoresSolucionesHistoricas.get(mejoresSolucionesHistoricas.size()-1), mejoresSolucionesHistoricas.get(mejoresSolucionesHistoricas.size()-2))) {
+					mejoresSolucionesHistoricasTimestamp.add(timestamp);
+				} else {
+					mejoresSolucionesHistoricasTimestamp.add(mejoresSolucionesHistoricasTimestamp.get(mejoresSolucionesHistoricasTimestamp.size()-1));
+				}
+			} else {
+				mejoresSolucionesHistoricasTimestamp.add(timestamp);
+			}
+			// 
 			
 			// Fin de epoca. Enfriamos el sistema geometricamente, y vamos por la siguiente
 			// epoca
