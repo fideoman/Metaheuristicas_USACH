@@ -30,6 +30,10 @@ public class TemplamientoSimulado {
 		// Guardemos nuestras soluciones. Guardaremos: Soluciones encontradas, y mejor Solucion historica en X iteracion
 		solucionesEncontradas = new ArrayList<int[]>();
 		mejoresSolucionesHistoricas = new ArrayList<int[]>();
+		costosEncontrados = new ArrayList<Integer>();
+		mejoresCostosEncontrados = new ArrayList<Integer>();
+		solucionesEncontradasTimestamp = new ArrayList<Timestamp>();
+		mejoresSolucionesHistoricasTimestamp = new ArrayList<Timestamp>();
 		
 		// La solucion inicial es la mejor Solucion historica y actual al comenzar. Es la unica que conocemos.
 		mejorSolucionHistorica = solucionInicial;
