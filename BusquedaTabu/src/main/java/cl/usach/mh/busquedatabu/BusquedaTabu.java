@@ -2,7 +2,9 @@ package cl.usach.mh.busquedatabu;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -21,6 +23,9 @@ public class BusquedaTabu {
 	public static int[] mejorSolucionActual;
 	public static ArrayList<int[]> solucionesEncontradas = new ArrayList<int[]>();
 	public static ArrayList<int[]> mejoresSolucionesHistoricas = new ArrayList<int[]>();
+	
+	public static ArrayList<Timestamp> solucionesEncontradasTimestamp = new ArrayList<Timestamp>();
+	public static ArrayList<Timestamp> mejoresSolucionesHistoricasTimestamp = new ArrayList<Timestamp>();
 	
 	private static TreeMap<String, Integer> listaTabu;
 	private static ArrayList<TreeMap<Integer, Integer>> memoriaMedianoPlazo;
@@ -122,6 +127,18 @@ public class BusquedaTabu {
 						solucionesEncontradas.add(mejorSolucionActual);
 						mejoresSolucionesHistoricas.add(mejorSolucionHistorica);
 						
+						Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+						
+						// En el caso de las soluciones encontradas, cada Timestamp sera unico.
+						solucionesEncontradasTimestamp.add(timestamp);
+						// En el caso de las mejores soluciones, la pregunta es: Cambio? Si cambio, registro el nuevo Timestamp
+						// Si no, repito el anterior.
+						if(!Arrays.equals(mejoresSolucionesHistoricas.get(mejoresSolucionesHistoricas.size()-1), mejoresSolucionesHistoricas.get(mejoresSolucionesHistoricas.size()-2))) {
+							mejoresSolucionesHistoricasTimestamp.add(timestamp);
+						} else {
+							mejoresSolucionesHistoricasTimestamp.add(mejoresSolucionesHistoricasTimestamp.get(mejoresSolucionesHistoricasTimestamp.size()-1));
+						}
+						
 						break; // No necesito mas!
 					}
 					// Si es prohibido, y no es el mejor historico, voy por el siguiente mejor vecino. 
@@ -148,6 +165,18 @@ public class BusquedaTabu {
 					
 					solucionesEncontradas.add(mejorSolucionActual);
 					mejoresSolucionesHistoricas.add(mejorSolucionHistorica);								
+					
+					Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+					
+					// En el caso de las soluciones encontradas, cada Timestamp sera unico.
+					solucionesEncontradasTimestamp.add(timestamp);
+					// En el caso de las mejores soluciones, la pregunta es: Cambio? Si cambio, registro el nuevo Timestamp
+					// Si no, repito el anterior.
+					if(!Arrays.equals(mejoresSolucionesHistoricas.get(mejoresSolucionesHistoricas.size()-1), mejoresSolucionesHistoricas.get(mejoresSolucionesHistoricas.size()-2))) {
+						mejoresSolucionesHistoricasTimestamp.add(timestamp);
+					} else {
+						mejoresSolucionesHistoricasTimestamp.add(mejoresSolucionesHistoricasTimestamp.get(mejoresSolucionesHistoricasTimestamp.size()-1));
+					}
 					
 					break; // Nada mas que hacer.
 				}				
