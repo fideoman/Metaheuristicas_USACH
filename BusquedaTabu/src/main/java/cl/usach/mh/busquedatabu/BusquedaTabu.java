@@ -60,6 +60,10 @@ public class BusquedaTabu {
 		// Guardemos nuestras soluciones. Guardaremos: Soluciones encontradas, y mejor Solucion historica en X iteracion
 		solucionesEncontradas = new ArrayList<int[]>();
 		mejoresSolucionesHistoricas = new ArrayList<int[]>();
+		costosEncontrados = new ArrayList<Integer>();
+		mejoresCostosEncontrados = new ArrayList<Integer>();
+		solucionesEncontradasTimestamp = new ArrayList<Timestamp>();
+		mejoresSolucionesHistoricasTimestamp = new ArrayList<Timestamp>();
 		
 		// 2) Inicializar Lista Tabu (memoria corto plazo), su tenor (tenure), memoria a mediano y largo plazo, con las estructuras mas adecuadas. 
 		listaTabu = new TreeMap<String, Integer>();
