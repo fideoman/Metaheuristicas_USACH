@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 
 import cl.usach.mh.algoritmogenetico.AlgoritmoGenetico;
 import cl.usach.mh.comunes.qap.QAP;
+import cl.usach.mh.comunes.utilidades.salida.Salida;
 
 public class AlgoritmoGeneticoEjecutable {
 		
@@ -39,6 +40,6 @@ public class AlgoritmoGeneticoEjecutable {
 		
 		AlgoritmoGenetico.ejecucion(solucionInicial, tamanioPoblacion, numeroPoblaciones, hibrido, tenor, numeroCiclosTotales, limiteIntercambios);
 		
-		QAP.grafico("Mejor Resultado: " + QAP.calculoCosto(AlgoritmoGenetico.mejorSolucionHistorica), "Mejor de la Población X", "Mejor Histórico", AlgoritmoGenetico.solucionesEncontradas, AlgoritmoGenetico.mejoresSolucionesHistoricas);
+		Salida.grafico("Mejor Resultado: " + QAP.calculoCosto(AlgoritmoGenetico.mejorSolucionHistorica), "Mejor de la Población X", "Mejor Histórico", AlgoritmoGenetico.solucionesEncontradas, AlgoritmoGenetico.mejoresSolucionesHistoricas);
 	}
 }
