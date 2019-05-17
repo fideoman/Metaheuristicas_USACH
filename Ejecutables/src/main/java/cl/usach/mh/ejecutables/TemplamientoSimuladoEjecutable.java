@@ -13,9 +13,9 @@ public class TemplamientoSimuladoEjecutable {
 		// Templamiento Simulado
 		// Lo mas sencillo posible.
 		
-		//QAP.cargarDatosQAP("qap/nug12.qap");
+		QAP.cargarDatosQAP("qap/nug12.qap");
 		//QAP.cargarDatosQAP("qap/chr25a.qap");
-		QAP.cargarDatosQAP("qap/kra30a.qap");
+		//QAP.cargarDatosQAP("qap/kra30a.qap");
 		//QAP.cargarDatosQAP("qap/esc64a.qap");
 		//QAP.cargarDatosQAP("qap/esc128.qap");		
 		
@@ -23,11 +23,11 @@ public class TemplamientoSimuladoEjecutable {
 		double temperaturaInicial = 10000; // Temperatura Inicial
 		int porcentajeTasaDescenso = 5; // Porcentaje de tasa de descenso, en entero. Ej: 1 -> 1%
 		// De 12:
-		//int[] solucionInicial = new int[] {8, 5, 6, 1, 7, 12, 4, 3, 11, 10, 9, 2};
+		int[] solucionInicial = new int[] {8, 5, 6, 1, 7, 12, 4, 3, 11, 10, 9, 2};
 		// De 25:
 		//int[] solucionInicial = new int[] {3, 8, 9, 13, 17, 6, 11, 7, 12, 18, 5, 19, 2, 16, 25, 15, 24, 4, 22, 10, 14, 23, 1, 20, 21};
 		// De 30:
-		int[] solucionInicial = new int[] {12, 18, 5, 26, 13, 11, 9, 21, 24, 20, 19, 14, 8, 15, 23, 3, 30, 17, 22, 16, 29, 7, 6, 4, 27, 25, 10, 1, 2, 28};
+		//int[] solucionInicial = new int[] {12, 18, 5, 26, 13, 11, 9, 21, 24, 20, 19, 14, 8, 15, 23, 3, 30, 17, 22, 16, 29, 7, 6, 4, 27, 25, 10, 1, 2, 28};
 		// De 64:
 		//int[] solucionInicial = new int[] {44, 34, 29, 61, 15, 1, 19, 36, 46, 43, 16, 54, 28, 56, 33, 40, 63, 7, 17, 14, 26, 22, 32, 23, 37, 2, 58, 48, 24, 41, 5, 6, 64, 4, 31, 25, 47, 10, 49, 21, 53, 52, 8, 35, 3, 20, 30, 11, 59, 60, 39, 55, 27, 57, 13, 12, 18, 42, 45, 62, 50, 38, 9, 51};
 		// De 128:
